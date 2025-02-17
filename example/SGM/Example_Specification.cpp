@@ -66,7 +66,7 @@ static void Assertions()
 	<<	sgm::spec::Title(L"Helper Functions for Assertion")
 	<<	L"You can not only show codes but also assert the result from the code is correct "
 	<<	L"using assertion helper functions. They check if the code works fine. When the code "
-	<<	L"fails the assertion, sgm::Exception is thrown, log message will be shown, and "
+	<<	L"fails the assertion, an exception is thrown, log message will be shown, and "
 	<<	L"Markdown document file won't be exported "
 	<<	L"(if there was an old document already, it will be eliminated) . " 
 	<<	L"Therefore it is guaranteed the code result is correct "
