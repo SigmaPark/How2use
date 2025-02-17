@@ -1,0 +1,27 @@
+if(MSVC)
+	add_definitions(-D_WINDOWS_SOLUTION_)
+
+	add_compile_options(/Zc:__cplusplus)
+	add_definitions(-DUNICODE)
+	add_definitions(-D_UNICODE)
+
+endif()
+
+if(UNIX)
+	add_definitions(-D_POSIX_SOLUTION_)
+
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+endif()
+
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+
+file(
+	GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+	${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+	${INCLUDE_DIR}/*.hpp
+)
+
+add_executable(SGM_Specification_example ${SRC_FILES})
+
+target_link_libraries(SGM_Specification_example PRIVATE SGM_Specification_lib)
