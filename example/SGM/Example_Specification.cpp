@@ -4,7 +4,7 @@
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-#include "Test_Specification.hpp"
+#include "Example_Specification.hpp"
 
 
 static void intro()
@@ -335,7 +335,7 @@ static void outro()
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-SGM_SPECIFICATION_TEST(sgm::spec::Test_, Specification, /**/)
+SGM_SPECIFICATION_TEST(sgm::spec::Example_, Specification, /**/)
 {	::intro
 ,	::Math_Expression
 ,	::Code_Block

@@ -65,12 +65,12 @@ bool wt::Tests(wchar_t const* const module_title) noexcept
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-#include "SGM/Test_Specification.hpp"
+#include "SGM/Example_Specification.hpp"
 
 
 void test() noexcept(false)
 {
-    sgm::spec::Test_Specification::test();
+    sgm::spec::Example_Specification::test();
 }
 
 

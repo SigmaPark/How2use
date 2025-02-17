@@ -11,7 +11,7 @@
 namespace sgm::spec
 {
 	
-	SGM_SPECIFICATION_CLASS(Test_, Specification, /**/);
+	SGM_SPECIFICATION_CLASS(Example_, Specification, /**/);
 
 }
 //========//========//========//========//=======#//========//========//========//========//=======#
