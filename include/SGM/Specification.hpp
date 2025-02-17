@@ -321,7 +321,7 @@ namespace sgm
 
 
         template
-        <   class T, class _T = std::decay_t<T>
+        <   class T, class _T = std::remove_cv_t< std::remove_reference_t<T> >
         ,   int 
             =   (   std::is_same<_T, _tabless_description>::value 
                 ||  std::is_same<_T, _code_description>::value
