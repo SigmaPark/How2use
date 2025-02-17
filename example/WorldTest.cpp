@@ -50,7 +50,7 @@ bool wt::Tests(wchar_t const* const module_title) noexcept
     }
     catch(...)
     {
-        std::wcout << L"Unexpected Error!\n";
+        std::wcout << L"Error occurs!\n";
     }
 
     ::log_message
