@@ -1,3 +1,7 @@
+#	SPDX-FileCopyrightText: (c) 2021 Jin-Eon Park <greengb@naver.com> <sigma@gm.gist.ac.kr>
+#	SPDX-License-Identifier: MIT License
+#=========#=========#=========#=========#=========#=========#=========#=========#=========#=========
+
 if(MSVC)
 	add_definitions(-D_WINDOWS_SOLUTION_)
 
