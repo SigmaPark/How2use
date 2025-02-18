@@ -5,13 +5,13 @@
 
 
 #pragma once
-#include "SGM/Specification.hpp"
+#include "SGM/How2use.hpp"
 
 
-namespace sgm::spec
+namespace sgm::h2u
 {
 	
-	SGM_SPECIFICATION_CLASS(Example_, Specification, /**/);
+	SGM_HOW2USE_CLASS(Guide_, How2use, /**/);
 
 }
 //========//========//========//========//=======#//========//========//========//========//=======#

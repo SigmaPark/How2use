@@ -12,8 +12,8 @@ file(
 )
 
 add_library(
-	SGM_Specification_lib STATIC ${SRC_FILES} ${INCLUDE_FILES}
+	How2use_lib STATIC ${SRC_FILES} ${INCLUDE_FILES}
 )
 
-target_include_directories(SGM_Specification_lib PUBLIC ${INCLUDE_DIR})
-target_compile_features(SGM_Specification_lib PUBLIC cxx_std_17)
+target_include_directories(How2use_lib PUBLIC ${INCLUDE_DIR})
+target_compile_features(How2use_lib PUBLIC cxx_std_17)

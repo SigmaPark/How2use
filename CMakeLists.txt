@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(
-	SGM_Specification
+	How2use
 	LANGUAGES CXX
 )
 
@@ -10,10 +10,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-option(BUILD_EXAMPLE_PROJ "Build SGM_Specification's example suite" ON)
+option(BUILD_GUIDE_PROJ "Build guide project" ON)
 
 add_subdirectory(lib)
 
-if(BUILD_EXAMPLE_PROJ)
-	add_subdirectory(example)
+if(BUILD_GUIDE_PROJ)
+	add_subdirectory(guide)
 endif()

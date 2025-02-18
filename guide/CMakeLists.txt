@@ -19,6 +19,6 @@ file(
 	${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
 )
 
-add_executable(SGM_Specification_example ${SRC_FILES})
+add_executable(How2use_guide ${SRC_FILES})
 
-target_link_libraries(SGM_Specification_example PRIVATE SGM_Specification_lib)
+target_link_libraries(How2use_guide PRIVATE How2use_lib)
