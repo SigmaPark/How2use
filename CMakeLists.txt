@@ -14,10 +14,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-option(BUILD_GUIDE_PROJ "Build guide project" ON)
+option(BUILD_HOW2USE_TEST_PROJ "Build How2use test project" ON)
 
 add_subdirectory(lib)
 
-if(BUILD_GUIDE_PROJ)
+if(BUILD_HOW2USE_TEST_PROJ)
 	add_subdirectory(guide)
 endif()
