@@ -20,4 +20,15 @@ add_library(
 )
 
 target_include_directories(How2use_lib PUBLIC ${INCLUDE_DIR})
-target_compile_features(How2use_lib PUBLIC cxx_std_17)
+
+target_compile_options(
+	How2use_lib PRIVATE
+	$<$<CXX_COMPILER_ID:MSVC>:
+		/permissive-; /W4; /WX;
+	>
+)
+
+target_compile_definitions(
+	How2use_lib PRIVATE
+	_CRT_SECURE_NO_WARNINGS
+)

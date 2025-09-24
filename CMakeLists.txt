@@ -2,7 +2,7 @@
 #	SPDX-License-Identifier: MIT License
 #=========#=========#=========#=========#=========#=========#=========#=========#=========#=========
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 project(
 	How2use
@@ -11,7 +11,6 @@ project(
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 option(BUILD_HOW2USE_TEST_PROJ "Build How2use test project" ON)

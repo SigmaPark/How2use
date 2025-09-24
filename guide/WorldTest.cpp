@@ -11,13 +11,15 @@
 static void test() noexcept(false);
 
 
+template<class = void>
+static void log_message() noexcept{}
+
 template<class A, class...ARGS>
 static void log_message(A&& a, ARGS&&...args) noexcept
 {
     std::wcout << static_cast<A&&>(a);
     
-    if constexpr( sizeof...(ARGS) != 0 )
-        log_message( static_cast<ARGS&&>(args)... );
+	log_message( static_cast<ARGS&&>(args)... );
 }
 
 

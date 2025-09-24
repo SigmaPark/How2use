@@ -343,27 +343,9 @@ namespace sgm
 
         struct _No_instance;
 
-    #pragma warning(push)
-    #pragma warning(disable : 4996)
-    	static auto _Mbs_to_Wcs(std::string const& mbs)-> std::wstring
-    	{
-    		std::wstring res(mbs.size(), L'\0');
-    
-    		mbstowcs(res.data(), mbs.c_str(), res.size());
-    		
-    		return res;
-    	}
-    	
-    	
-    	static auto _Wcs_to_Mbs(std::wstring const& wcs)-> std::string
-    	{
-    		std::string res(wcs.size(), '\0');
-    
-    		wcstombs(res.data(), wcs.c_str(), res.size());
-    
-    		return res;
-    	}
-    #pragma warning(pop)
+		
+    	auto _Mbs_to_Wcs(std::string const& mbs)-> std::wstring;
+    	auto _Wcs_to_Mbs(std::wstring const& wcs)-> std::string;
     
     }
 }

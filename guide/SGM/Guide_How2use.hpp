@@ -8,10 +8,13 @@
 #include "SGM/How2use.hpp"
 
 
-namespace sgm::h2u
+namespace sgm
 {
+	namespace h2u
+	{
 	
-	SGM_HOW2USE_CLASS(Guide_, How2use, /**/);
-
+		SGM_HOW2USE_CLASS(Guide_, How2use, /**/);
+		
+	}
 }
 //========//========//========//========//=======#//========//========//========//========//=======#

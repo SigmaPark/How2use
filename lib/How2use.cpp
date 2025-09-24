@@ -24,6 +24,27 @@ auto operator ""_code(wchar_t const* str, size_t)
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
+auto sgm::h2u::_Mbs_to_Wcs(std::string const& mbs)-> std::wstring
+{
+	std::wstring res(mbs.size(), L'\0');
+    
+	mbstowcs(&res.front(), mbs.c_str(), res.size());
+    		
+	return res;
+}
+    	
+
+auto sgm::h2u::_Wcs_to_Mbs(std::wstring const& wcs)-> std::string
+{
+	std::string res(wcs.size(), '\0');
+    
+	wcstombs(&res.front(), wcs.c_str(), res.size());
+    
+	return res;
+}
+//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
+
+
 struct sgm::h2u::_MD_Stream::_Contents{  std::queue<wstring> q = {};  };
 
 
@@ -524,7 +545,9 @@ auto sgm::h2u::_Code_writing(wstring const& str, wstring const& lang)-> wstring
 
 	for(  res.append( wstring(L"```") + lang + L"\n" );  !qs.empty();  qs.pop()  )
 	{
-		if( auto const& s = qs.front();  !_is_empty_line(s) )
+		auto const& s = qs.front();  
+		
+		if( !_is_empty_line(s) )
 			res.append(s.cbegin() + min_nof_tab, s.cend());
 		else
 			res.append(s);
