@@ -26,3 +26,10 @@ file(
 add_executable(How2use_guide ${SRC_FILES})
 
 target_link_libraries(How2use_guide PRIVATE How2use_lib)
+
+target_compile_options(
+	How2use_guide PRIVATE
+	$<$<CXX_COMPILER_ID:MSVC>:
+		/permissive-; /W4; /WX;
+	>
+)
