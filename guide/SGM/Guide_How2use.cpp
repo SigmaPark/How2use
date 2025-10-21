@@ -5,6 +5,9 @@
 
 
 #include "Guide_How2use.hpp"
+#include <deque>
+#include <algorithm>
+#include <memory>
 
 
 static void intro()
@@ -94,8 +97,8 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 	<<	L"\"sgm::h2u::Are_N_True\" do the same thing on partial range from an iterator ." 
 	<<	sgm::h2u::newl;
 
-BEGIN_CODE_BLOCK(are_all_true_ex)
 	{
+	BEGIN_CODE_BLOCK(are_all_true_ex)
 		std::initializer_list<int> range{2, 4, 6, 8, 10, 12};
 
 		auto are_even_f = [](int n)-> bool{  return n % 2 == 0;  };
@@ -105,8 +108,8 @@ BEGIN_CODE_BLOCK(are_all_true_ex)
 		(	sgm::h2u::Are_All_True(range, are_even_f)
 		&&	sgm::h2u::Are_N_True(range.begin(), 4, are_less_than_10_f)
 		);
+	END_CODE_BLOCK_AND_LOAD(are_all_true_ex)
 	}
-END_CODE_BLOCK_AND_LOAD(are_all_true_ex)
 
 	sgm::h2u::mdo << sgm::h2u::empty_line;
 
@@ -158,8 +161,8 @@ END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 	<<	L"in the same order) . You can specify the function that determines whether the elements "
 	<<	L"are same each others ( operator== as default ) . " << sgm::h2u::newl;
 
-BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
 	{
+	BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
 		std::initializer_list<int> 
 			range0{2, 4, 6, 8}, 
 			range1{2, 4, 6, 8},
@@ -178,10 +181,180 @@ BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
 		(	sgm::h2u::Are_Equivalent_Ranges(range0, range1)
 		&&	sgm::h2u::Are_Equivalent_Ranges(range1, range2, abs_value_are_same_f)
 		);
+	END_CODE_BLOCK_AND_LOAD(are_equivalent_ranges_ex)
 	}
-END_CODE_BLOCK_AND_LOAD(are_equivalent_ranges_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;	
+	sgm::h2u::mdo << sgm::h2u::empty_line;
+}
+
+
+static void Specimen_and_State()
+{
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"sgm::h2u::Specimen")
+	<<	L"The library provides a powerful behavior verification tool, \"sgm::h2u::Specimen\". "
+	<<	sgm::h2u::empty_line;
+	
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"sgm::h2u::Specimen::State", 2)
+	<<	L"It tracks object lifecycle events through a State flag, allowing you to verify "
+	<<	L"how objects are constructed, copied, moved, and destroyed in your code."
+	<<	sgm::h2u::empty_line;
+
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"State Flag for Lifecycle Tracking", 3)
+	<<	L"The Specimen class maintains a State enum that records the most recent lifecycle event. "
+	<<	L"You can directly check this State to verify object behavior." << sgm::h2u::newl;
+
+	{
+	BEGIN_CODE_BLOCK(specimen_state_basic_ex)
+		sgm::h2u::Specimen s1;
+		SGM_H2U_ASSERT(s1.state() == sgm::h2u::Specimen::State::DEFAULT_CONSTRUCTION);
+
+		sgm::h2u::Specimen s2(42);
+		SGM_H2U_ASSERT
+		(	s2.state() == sgm::h2u::Specimen::State::MANUAL_CONSTRUCTION
+		&&	s2.value() == 42
+		);
+
+		sgm::h2u::Specimen s3 = s2;
+		SGM_H2U_ASSERT
+		(	s3.state() == sgm::h2u::Specimen::State::COPY_CONSTRUCTION
+		&&	s3.value() == 42
+		);
+	END_CODE_BLOCK_AND_LOAD(specimen_state_basic_ex)
+	}
+
+	sgm::h2u::mdo << sgm::h2u::empty_line;
+
+
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"Move Semantics Verification", 3)
+	<<	L"When an object is moved, the source object's State becomes MOVE_AWAY, "
+	<<	L"while the destination object's State indicates the move operation type."
+	<<	sgm::h2u::newl;
+
+	{
+	BEGIN_CODE_BLOCK(specimen_move_ex)
+		sgm::h2u::Specimen s1(100);
+
+		sgm::h2u::Specimen s2 = std::move(s1);
+
+		SGM_H2U_ASSERT
+		(	s2.state() == sgm::h2u::Specimen::State::MOVE_CONSTRUCTION
+		&&	s2.value() == 100
+		&&	s1.state() == sgm::h2u::Specimen::State::MOVE_AWAY
+		);
+
+		sgm::h2u::Specimen s3(200);
+		s3 = std::move(s2);
+
+		SGM_H2U_ASSERT
+		(	s3.state() == sgm::h2u::Specimen::State::MOVE_ASSIGNMENT
+		&&	s3.value() == 100
+		&&	s2.state() == sgm::h2u::Specimen::State::MOVE_AWAY
+		);
+	END_CODE_BLOCK_AND_LOAD(specimen_move_ex)
+	}
+
+	sgm::h2u::mdo << sgm::h2u::empty_line;
+
+
+	sgm::h2u::mdo
+	<<	L"The State flag provides immediate, direct verification of an object's lifecycle status. "
+	<<	L"This is particularly useful when testing how your code handles object semantics, "
+	<<	L"ensuring that operations like copy elision or move optimization occur as expected."
+	<<	sgm::h2u::empty_line;
+}
+
+
+static void Specimen_Log_Tracking()
+{
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"Testing with Specimen Logger", 2)
+	<<	L"For complex scenarios where you need to verify a sequence of lifecycle events, "
+	<<	L"Specimen provides a logger system. By implementing a custom logger, you can "
+	<<	L"record and analyze the entire history of object operations."
+	<<	sgm::h2u::empty_line;
+
+
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"Recording Logger Implementation", 3)
+	<<	L"Create a custom logger by inheriting from \"sgm::h2u::Specimen_Logger\". "
+	<<	L"This example uses a deque to record all lifecycle events." << sgm::h2u::newl;
+
+BEGIN_CODE_BLOCK(recording_logger_impl)
+	class Recording_Specimen_Logger : public sgm::h2u::Specimen_Logger
+	{
+	private:
+		std::deque<std::wstring> _record;
+
+	public:
+		std::deque<std::wstring> const& record;
+
+		Recording_Specimen_Logger() noexcept
+		:	sgm::h2u::Specimen_Logger(), _record(), record(_record)
+		{}
+
+		void log(std::wstring const& msg) override{  _record.emplace_back(msg);  }
+		void reset() noexcept{  _record.clear();  }
+
+		~Recording_Specimen_Logger() override = default;
+	};
+END_CODE_BLOCK_AND_LOAD(recording_logger_impl)
+
+	sgm::h2u::mdo << sgm::h2u::empty_line;
+
+
+	sgm::h2u::mdo
+	<<	sgm::h2u::Title(L"Testing Template Behavior", 3)
+	<<	L"The logger system is especially powerful for verifying how template classes "
+	<<	L"handle objects. Use \"sgm::h2u::Specimen_Log_Guard\" to enable logging within "
+	<<	L"a scope, then examine the recorded events." << sgm::h2u::newl;
+
+BEGIN_CODE_BLOCK(specimen_template_test)
+	Recording_Specimen_Logger spec_log;
+
+	{
+		sgm::h2u::Specimen_Log_Guard const monitor_guard(spec_log);
+
+		sgm::h2u::Specimen s1;
+		sgm::h2u::Specimen s2 = s1;
+	}
+
+	//	Verify copy constructor was called during monitoring.
+	SGM_H2U_ASSERT
+	(	std::find(spec_log.record.begin(), spec_log.record.end(), L"copy_construction")
+	!=	spec_log.record.end()
+	);
+
+	spec_log.reset();
+
+	{
+		sgm::h2u::Specimen_Log_Guard const monitor_guard(spec_log);
+
+		auto sp_s1 = std::make_shared<sgm::h2u::Specimen>();
+		std::shared_ptr<sgm::h2u::Specimen> sp_s2 = sp_s1;
+	}
+
+	//	Verify std::shared_ptr<T> doesn't call T's copy constructor.
+	SGM_H2U_ASSERT
+	(	std::find(spec_log.record.begin(), spec_log.record.end(), L"copy_construction")
+	==	spec_log.record.end()
+	);
+END_CODE_BLOCK_AND_LOAD(specimen_template_test)
+
+	sgm::h2u::mdo << sgm::h2u::empty_line;
+
+
+	sgm::h2u::mdo
+	<<	L"This testing approach is invaluable when implementing custom template classes "
+	<<	L"(like decorators, wrappers, or containers) where you need to ensure optimal "
+	<<	L"forwarding behavior and avoid unnecessary copies. " << sgm::h2u::newl
+	<<	L"By recording event sequences, you can verify not just what the final state is, "
+	<<	L"but also how the program arrived at that state, revealing hidden copies or "
+	<<	L"suboptimal forwarding that might otherwise go unnoticed."
+	<<	sgm::h2u::empty_line;
 }
 
 
@@ -190,7 +363,8 @@ static void External_Resources()
 	sgm::h2u::mdo
 	<<	sgm::h2u::Title(L"External Resources")
 	<<	L"All external materials you want to attach to a document are to be located at "
-	<<	L"\"\\md_materials\"" << sgm::h2u::empty_line;
+	<<	L"\"\\md_materials\"" 
+	<<	sgm::h2u::empty_line;
 
 	sgm::h2u::mdo
 	<<	sgm::h2u::Title(L"Text File", 2)
@@ -340,6 +514,8 @@ SGM_HOW2USE_TESTS(sgm::h2u::Guide_, How2use, /**/)
 ,	::Math_Expression
 ,	::Code_Block
 ,	::Assertions
+,	::Specimen_and_State
+,	::Specimen_Log_Tracking
 ,	::External_Resources
 ,	::Guards
 ,	::Literal_Suffixes
