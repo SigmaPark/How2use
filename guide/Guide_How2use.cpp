@@ -12,37 +12,37 @@
 
 static void intro()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Introduction")
+	h2u::mdo
+	<<	h2u::Title(L"Introduction")
 	<<	L"This library helps you make manual documents for a code library "
-	<<	L"with its example codes." << sgm::h2u::newl
+	<<	L"with its example codes." << h2u::newl
 	<<	L"You can easily create the documents as Markdown format just by writing example codes."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 }
 
 
 static void Math_Expression()
 {
-	sgm::h2u::mdo 
-	<<	sgm::h2u::Title(L"Math Expression")
+	h2u::mdo 
+	<<	h2u::Title(L"Math Expression")
 	<<	L"Markdown supports writing mathematical expressions using LaTeX syntex." 
-	<<	sgm::h2u::newl
-	<<	sgm::h2u::Load_code_block(L"math_expression_ex") << sgm::h2u::newl;
+	<<	h2u::newl
+	<<	h2u::Load_code_block(L"math_expression_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(math_expression_ex)
-	sgm::h2u::mdo << LR"($$ \sum_{n = 1}^{\infty}{n^{-2}} = \frac{\pi^{2}}{6} $$)";
+	h2u::mdo << LR"($$ \sum_{n = 1}^{\infty}{n^{-2}} = \frac{\pi^{2}}{6} $$)";
 END_CODE_BLOCK(math_expression_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 }
 
 
 static void Code_Block()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Code Block")
-	<<	L"Macro \"BEGIN_CODE_BLOCK\" and \"END_CODE_BLOCK\" captures codes." << sgm::h2u::newl
-	<<	sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Code Block")
+	<<	L"Macro \"BEGIN_CODE_BLOCK\" and \"END_CODE_BLOCK\" captures codes." << h2u::newl
+	<<	h2u::newl;
 
 BEGIN_CODE_BLOCK(code_block_example_show)
 
@@ -52,21 +52,21 @@ BEGIN_CODE_BLOCK(code_block_ex)
 	for(int i = 1;  i <= 10;  ++i)
 		sum += i;
 
-	SGM_H2U_ASSERT(sum == 55);
+	H2U_ASSERT(sum == 55);
 END_CODE_BLOCK(code_block_ex)
 
 END_CODE_BLOCK(code_block_example_show)
 
-	sgm::h2u::mdo << sgm::h2u::Load_code_block(L"code_block_example_show") << sgm::h2u::newl;
+	h2u::mdo << h2u::Load_code_block(L"code_block_example_show") << h2u::newl;
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 }
 
 
 static void Assertions()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Helper Functions for Assertion")
+	h2u::mdo
+	<<	h2u::Title(L"Helper Functions for Assertion")
 	<<	L"You can not only show codes but also assert the result from the code is correct "
 	<<	L"using assertion helper functions. They check if the code works fine. When the code "
 	<<	L"fails the assertion, log message will be shown and "
@@ -74,28 +74,28 @@ static void Assertions()
 	<<	L"(if there was an old document already, it will be eliminated) . " 
 	<<	L"Therefore it is guaranteed the code result is correct "
 	<<	L"if the document file is successfully created."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"SGM_H2U_ASSERT", 2)
-	<<	L"\"SGM_H2U_ASSERT\" checks an boolean expression is true." << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"H2U_ASSERT", 2)
+	<<	L"\"H2U_ASSERT\" checks an boolean expression is true." << h2u::newl;
 
 BEGIN_CODE_BLOCK(is_true_ex)
 	int result = 1 + 1;
 
-	SGM_H2U_ASSERT(result == 2);
+	H2U_ASSERT(result == 2);
 END_CODE_BLOCK_AND_LOAD(is_true_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo 
-	<<	sgm::h2u::Title(L"sgm::h2u::Are_All_True / sgm::h2u::Are_N_True", 2)
-	<<	L"\"sgm::h2u::Are_All_True\" checks whether all elements in a range on 1st parameter "
+	h2u::mdo 
+	<<	h2u::Title(L"h2u::Are_All_True / h2u::Are_N_True", 2)
+	<<	L"\"h2u::Are_All_True\" checks whether all elements in a range on 1st parameter "
 	<<	L"satisfy a condition function given as 2nd parameter. " 
-	<<	L"\"sgm::h2u::Are_N_True\" do the same thing on partial range from an iterator ." 
-	<<	sgm::h2u::newl;
+	<<	L"\"h2u::Are_N_True\" do the same thing on partial range from an iterator ." 
+	<<	h2u::newl;
 
 	{
 	BEGIN_CODE_BLOCK(are_all_true_ex)
@@ -104,29 +104,29 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 		auto are_even_f = [](int n)-> bool{  return n % 2 == 0;  };
 		auto are_less_than_10_f = [](int n)-> bool{  return n < 10;  };
 
-		SGM_H2U_ASSERT
-		(	sgm::h2u::Are_All_True(range, are_even_f)
-		&&	sgm::h2u::Are_N_True(range.begin(), 4, are_less_than_10_f)
+		H2U_ASSERT
+		(	h2u::Are_All_True(range, are_even_f)
+		&&	h2u::Are_N_True(range.begin(), 4, are_less_than_10_f)
 		);
 	END_CODE_BLOCK_AND_LOAD(are_all_true_ex)
 	}
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo 
-	<<	sgm::h2u::Title(L"sgm::h2u::Are_All_Equivalent_to / sgm::h2u::Are_N_Equivalent_to", 2)
-	<<	L"\"sgm::h2u::Are_All_Equivalent_to\" checks whether all elements in a range on 1st "
+	h2u::mdo 
+	<<	h2u::Title(L"h2u::Are_All_Equivalent_to / h2u::Are_N_Equivalent_to", 2)
+	<<	L"\"h2u::Are_All_Equivalent_to\" checks whether all elements in a range on 1st "
 	<<	L"parameter are equivalent to 2nd parameter. You can specify the function that determines "
 	<<	L"whether they are equivalent on 3rd parameter ( operator== as default ) . "
-	<<	L"\"sgm::h2u::Are_N_Equivalent_to\" do the same thing on partial range "
-	<<	L"from an iterator . " << sgm::h2u::newl;
+	<<	L"\"h2u::Are_N_Equivalent_to\" do the same thing on partial range "
+	<<	L"from an iterator . " << h2u::newl;
 
 BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 	{
 		std::initializer_list<int> range{7, 7, 7, 7};
 
-		sgm::h2u::Are_All_Equivalent_to(range, 7);
+		h2u::Are_All_Equivalent_to(range, 7);
 	}
 	{
 		std::initializer_list<int> 
@@ -142,24 +142,24 @@ BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 				return abs_n0 == abs_n1;
 			};
 
-		SGM_H2U_ASSERT
-		(	sgm::h2u::Are_All_Equivalent_to(range0, 7, abs_value_are_same_f)
-		&&	sgm::h2u::Are_N_Equivalent_to(range0.begin(), 3, 7)
-		&&	sgm::h2u::Are_N_Equivalent_to(range1.begin() + 2, 3, 7)
-		&&	sgm::h2u::Are_N_Equivalent_to(range1.begin() + 2, 5, 7, abs_value_are_same_f)
+		H2U_ASSERT
+		(	h2u::Are_All_Equivalent_to(range0, 7, abs_value_are_same_f)
+		&&	h2u::Are_N_Equivalent_to(range0.begin(), 3, 7)
+		&&	h2u::Are_N_Equivalent_to(range1.begin() + 2, 3, 7)
+		&&	h2u::Are_N_Equivalent_to(range1.begin() + 2, 5, 7, abs_value_are_same_f)
 		);
 	}
 END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"sgm::h2u::Are_Equivalent_Ranges", 2)
-	<<	L"\"sgm::h2u::Are_Equivalent_Ranges\" checks whether two ranges given as 1st and 2nd "
+	h2u::mdo
+	<<	h2u::Title(L"h2u::Are_Equivalent_Ranges", 2)
+	<<	L"\"h2u::Are_Equivalent_Ranges\" checks whether two ranges given as 1st and 2nd "
 	<<	L"parameters are the same (the number of elements are same and have the same elements "
 	<<	L"in the same order) . You can specify the function that determines whether the elements "
-	<<	L"are same each others ( operator== as default ) . " << sgm::h2u::newl;
+	<<	L"are same each others ( operator== as default ) . " << h2u::newl;
 
 	{
 	BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
@@ -177,114 +177,114 @@ END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 				return abs_n0 == abs_n1;
 			};	
 
-		SGM_H2U_ASSERT
-		(	sgm::h2u::Are_Equivalent_Ranges(range0, range1)
-		&&	sgm::h2u::Are_Equivalent_Ranges(range1, range2, abs_value_are_same_f)
+		H2U_ASSERT
+		(	h2u::Are_Equivalent_Ranges(range0, range1)
+		&&	h2u::Are_Equivalent_Ranges(range1, range2, abs_value_are_same_f)
 		);
 	END_CODE_BLOCK_AND_LOAD(are_equivalent_ranges_ex)
 	}
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 }
 
 
 static void Specimen_and_State()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"sgm::h2u::Specimen")
-	<<	L"The library provides a powerful behavior verification tool, \"sgm::h2u::Specimen\". "
-	<<	sgm::h2u::empty_line;
+	h2u::mdo
+	<<	h2u::Title(L"h2u::Specimen")
+	<<	L"The library provides a powerful behavior verification tool, \"h2u::Specimen\". "
+	<<	h2u::empty_line;
 	
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"sgm::h2u::Specimen::State", 2)
+	h2u::mdo
+	<<	h2u::Title(L"h2u::Specimen::State", 2)
 	<<	L"It tracks object lifecycle events through a State flag, allowing you to verify "
 	<<	L"how objects are constructed, copied, moved, and destroyed in your code."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"State Flag for Lifecycle Tracking", 3)
+	h2u::mdo
+	<<	h2u::Title(L"State Flag for Lifecycle Tracking", 3)
 	<<	L"The Specimen class maintains a State enum that records the most recent lifecycle event. "
-	<<	L"You can directly check this State to verify object behavior." << sgm::h2u::newl;
+	<<	L"You can directly check this State to verify object behavior." << h2u::newl;
 
 	{
 	BEGIN_CODE_BLOCK(specimen_state_basic_ex)
-		sgm::h2u::Specimen s1;
-		SGM_H2U_ASSERT(s1.state() == sgm::h2u::Specimen::State::DEFAULT_CONSTRUCTION);
+		h2u::Specimen s1;
+		H2U_ASSERT(s1.state() == h2u::Specimen::State::DEFAULT_CONSTRUCTION);
 
-		sgm::h2u::Specimen s2(42);
-		SGM_H2U_ASSERT
-		(	s2.state() == sgm::h2u::Specimen::State::MANUAL_CONSTRUCTION
+		h2u::Specimen s2(42);
+		H2U_ASSERT
+		(	s2.state() == h2u::Specimen::State::MANUAL_CONSTRUCTION
 		&&	s2.value() == 42
 		);
 
-		sgm::h2u::Specimen s3 = s2;
-		SGM_H2U_ASSERT
-		(	s3.state() == sgm::h2u::Specimen::State::COPY_CONSTRUCTION
+		h2u::Specimen s3 = s2;
+		H2U_ASSERT
+		(	s3.state() == h2u::Specimen::State::COPY_CONSTRUCTION
 		&&	s3.value() == 42
 		);
 	END_CODE_BLOCK_AND_LOAD(specimen_state_basic_ex)
 	}
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Move Semantics Verification", 3)
+	h2u::mdo
+	<<	h2u::Title(L"Move Semantics Verification", 3)
 	<<	L"When an object is moved, the source object's State becomes MOVE_AWAY, "
 	<<	L"while the destination object's State indicates the move operation type."
-	<<	sgm::h2u::newl;
+	<<	h2u::newl;
 
 	{
 	BEGIN_CODE_BLOCK(specimen_move_ex)
-		sgm::h2u::Specimen s1(100);
+		h2u::Specimen s1(100);
 
-		sgm::h2u::Specimen s2 = std::move(s1);
+		h2u::Specimen s2 = std::move(s1);
 
-		SGM_H2U_ASSERT
-		(	s2.state() == sgm::h2u::Specimen::State::MOVE_CONSTRUCTION
+		H2U_ASSERT
+		(	s2.state() == h2u::Specimen::State::MOVE_CONSTRUCTION
 		&&	s2.value() == 100
-		&&	s1.state() == sgm::h2u::Specimen::State::MOVE_AWAY
+		&&	s1.state() == h2u::Specimen::State::MOVE_AWAY
 		);
 
-		sgm::h2u::Specimen s3(200);
+		h2u::Specimen s3(200);
 		s3 = std::move(s2);
 
-		SGM_H2U_ASSERT
-		(	s3.state() == sgm::h2u::Specimen::State::MOVE_ASSIGNMENT
+		H2U_ASSERT
+		(	s3.state() == h2u::Specimen::State::MOVE_ASSIGNMENT
 		&&	s3.value() == 100
-		&&	s2.state() == sgm::h2u::Specimen::State::MOVE_AWAY
+		&&	s2.state() == h2u::Specimen::State::MOVE_AWAY
 		);
 	END_CODE_BLOCK_AND_LOAD(specimen_move_ex)
 	}
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
+	h2u::mdo
 	<<	L"The State flag provides immediate, direct verification of an object's lifecycle status. "
 	<<	L"This is particularly useful when testing how your code handles object semantics, "
 	<<	L"ensuring that operations like copy elision or move optimization occur as expected."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 }
 
 
 static void Specimen_Log_Tracking()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Testing with Specimen Logger", 2)
+	h2u::mdo
+	<<	h2u::Title(L"Testing with Specimen Logger", 2)
 	<<	L"For complex scenarios where you need to verify a sequence of lifecycle events, "
 	<<	L"Specimen provides a logger system. By implementing a custom logger, you can "
 	<<	L"record and analyze the entire history of object operations."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Recording Logger Implementation", 3)
-	<<	L"Create a custom logger by inheriting from \"sgm::h2u::Specimen_Logger\". "
-	<<	L"This example uses a deque to record all lifecycle events." << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Recording Logger Implementation", 3)
+	<<	L"Create a custom logger by inheriting from \"h2u::Specimen_Logger\". "
+	<<	L"This example uses a deque to record all lifecycle events." << h2u::newl;
 
 BEGIN_CODE_BLOCK(recording_logger_impl)
-	class Recording_Specimen_Logger : public sgm::h2u::Specimen_Logger
+	class Recording_Specimen_Logger : public h2u::Specimen_Logger
 	{
 	private:
 		std::deque<std::wstring> _record;
@@ -293,7 +293,7 @@ BEGIN_CODE_BLOCK(recording_logger_impl)
 		std::deque<std::wstring> const& record;
 
 		Recording_Specimen_Logger() noexcept
-		:	sgm::h2u::Specimen_Logger(), _record(), record(_record)
+		:	h2u::Specimen_Logger(), _record(), record(_record)
 		{}
 
 		void log(std::wstring const& msg) override{  _record.emplace_back(msg);  }
@@ -303,27 +303,27 @@ BEGIN_CODE_BLOCK(recording_logger_impl)
 	};
 END_CODE_BLOCK_AND_LOAD(recording_logger_impl)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Testing Template Behavior", 3)
+	h2u::mdo
+	<<	h2u::Title(L"Testing Template Behavior", 3)
 	<<	L"The logger system is especially powerful for verifying how template classes "
-	<<	L"handle objects. Use \"sgm::h2u::Specimen_Log_Guard\" to enable logging within "
-	<<	L"a scope, then examine the recorded events." << sgm::h2u::newl;
+	<<	L"handle objects. Use \"h2u::Specimen_Log_Guard\" to enable logging within "
+	<<	L"a scope, then examine the recorded events." << h2u::newl;
 
 BEGIN_CODE_BLOCK(specimen_template_test)
 	Recording_Specimen_Logger spec_log;
 
 	{
-		sgm::h2u::Specimen_Log_Guard const monitor_guard(spec_log);
+		h2u::Specimen_Log_Guard const monitor_guard(spec_log);
 
-		sgm::h2u::Specimen s1;
-		sgm::h2u::Specimen s2 = s1;
+		h2u::Specimen s1;
+		h2u::Specimen s2 = s1;
 	}
 
 	//	Verify copy constructor was called during monitoring.
-	SGM_H2U_ASSERT
+	H2U_ASSERT
 	(	std::find(spec_log.record.begin(), spec_log.record.end(), L"copy_construction")
 	!=	spec_log.record.end()
 	);
@@ -331,140 +331,140 @@ BEGIN_CODE_BLOCK(specimen_template_test)
 	spec_log.reset();
 
 	{
-		sgm::h2u::Specimen_Log_Guard const monitor_guard(spec_log);
+		h2u::Specimen_Log_Guard const monitor_guard(spec_log);
 
-		auto sp_s1 = std::make_shared<sgm::h2u::Specimen>();
-		std::shared_ptr<sgm::h2u::Specimen> sp_s2 = sp_s1;
+		auto sp_s1 = std::make_shared<h2u::Specimen>();
+		std::shared_ptr<h2u::Specimen> sp_s2 = sp_s1;
 	}
 
 	//	Verify std::shared_ptr<T> doesn't call T's copy constructor.
-	SGM_H2U_ASSERT
+	H2U_ASSERT
 	(	std::find(spec_log.record.begin(), spec_log.record.end(), L"copy_construction")
 	==	spec_log.record.end()
 	);
 END_CODE_BLOCK_AND_LOAD(specimen_template_test)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
+	h2u::mdo
 	<<	L"This testing approach is invaluable when implementing custom template classes "
 	<<	L"(like decorators, wrappers, or containers) where you need to ensure optimal "
-	<<	L"forwarding behavior and avoid unnecessary copies. " << sgm::h2u::newl
+	<<	L"forwarding behavior and avoid unnecessary copies. " << h2u::newl
 	<<	L"By recording event sequences, you can verify not just what the final state is, "
 	<<	L"but also how the program arrived at that state, revealing hidden copies or "
 	<<	L"suboptimal forwarding that might otherwise go unnoticed."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 }
 
 
 static void External_Resources()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"External Resources")
+	h2u::mdo
+	<<	h2u::Title(L"External Resources")
 	<<	L"All external materials you want to attach to a document are to be located at "
 	<<	L"\"\\md_materials\"" 
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Text File", 2)
-	<<	L"Use a macro function \"LOAD_DESCRIPTION_FILE\"" << sgm::h2u::newl
-	<<	sgm::h2u::Load_code_block(L"descrip_file_ex") << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Text File", 2)
+	<<	L"Use a macro function \"LOAD_DESCRIPTION_FILE\"" << h2u::newl
+	<<	h2u::Load_code_block(L"descrip_file_ex") << h2u::newl;
 
 
 	{
-		sgm::h2u::md_block_guard mbg;
+		h2u::md_block_guard mbg;
 
 BEGIN_CODE_BLOCK(descrip_file_ex)
-		sgm::h2u::mdo << sgm::h2u::Load_description_file(L"YOLO.txt");
+		h2u::mdo << h2u::Load_description_file(L"YOLO.txt");
 END_CODE_BLOCK(descrip_file_ex)
 	}
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 	
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Image File", 2)
-	<<	L"Use \"sgm::h2u::Load_image\" function." << sgm::h2u::newl
-	<<	sgm::h2u::Load_code_block(L"img_ex") << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Image File", 2)
+	<<	L"Use \"h2u::Load_image\" function." << h2u::newl
+	<<	h2u::Load_code_block(L"img_ex") << h2u::newl;
 
 
 BEGIN_CODE_BLOCK(img_ex)
 	{
-		sgm::h2u::html_block_guard hbg(L"center");
+		h2u::html_block_guard hbg(L"center");
 
-		sgm::h2u::mdo << sgm::h2u::Load_image(L"sample_image.jpg", 720);
+		h2u::mdo << h2u::Load_image(L"sample_image.jpg", 720);
 	}
 END_CODE_BLOCK(img_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
-	sgm::h2u::mdo
+	h2u::mdo
 	<<	L"The 2nd parameter means image width to show " 
 	<<	L"and can be omitted(then it shows the image by original size)."
-	<<	sgm::h2u::empty_line;
+	<<	h2u::empty_line;
 }
 
 
 static void Guards()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Guards")
-	<<	sgm::h2u::Title(L"Block Guard", 2)
-	<<	sgm::h2u::Load_code_block(L"md_guard_ex") << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Guards")
+	<<	h2u::Title(L"Block Guard", 2)
+	<<	h2u::Load_code_block(L"md_guard_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(md_guard_ex)
 	{
-		sgm::h2u::md_block_guard mbg;
+		h2u::md_block_guard mbg;
 
-		sgm::h2u::mdo 
+		h2u::mdo 
 		<<	L"Until \"mbg\" is alive(before its destructor is excuted), "
-		<<	L"all contents are in box tab." << sgm::h2u::newl;
+		<<	L"all contents are in box tab." << h2u::newl;
 	}
 END_CODE_BLOCK(md_guard_ex)
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::newl
-	<<	sgm::h2u::Title(L"HTML Guard", 2)
-	<<	sgm::h2u::Load_code_block(L"html_guard_ex") << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::newl
+	<<	h2u::Title(L"HTML Guard", 2)
+	<<	h2u::Load_code_block(L"html_guard_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(html_guard_ex)
 	{
-		sgm::h2u::html_block_guard hbg(L"center strong blockquote");
+		h2u::html_block_guard hbg(L"center strong blockquote");
 		
-		sgm::h2u::mdo 
+		h2u::mdo 
 		<<	L"Until \"hbg\" is alive, "
 		<<	L"all contents are aligned at center, emphasized and quoted in block." 
-		<<	sgm::h2u::newl;
+		<<	h2u::newl;
 	}
 END_CODE_BLOCK(html_guard_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 	
-	sgm::h2u::mdo 
-	<<	L"Another way to apply HTML tags is to use \"sgm::h2u::HTML_tag\" function."
-	<<	sgm::h2u::newl
-	<<	sgm::h2u::Load_code_block(L"html_tag_ex") << sgm::h2u::newl;
+	h2u::mdo 
+	<<	L"Another way to apply HTML tags is to use \"h2u::HTML_tag\" function."
+	<<	h2u::newl
+	<<	h2u::Load_code_block(L"html_tag_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(html_tag_ex)
-	sgm::h2u::mdo 
-	<<	sgm::h2u::HTML_tag(L"HTML tags to a short messages.", L"center strong blockquote");
+	h2u::mdo 
+	<<	h2u::HTML_tag(L"HTML tags to a short messages.", L"center strong blockquote");
 END_CODE_BLOCK(html_tag_ex)
 
 	
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 }
 
 
 static void Literal_Suffixes()
 {
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"Literal Suffixes")
-	<<	sgm::h2u::Title(L"\"\"_mdo for Tabless Description", 2)
-	<<	sgm::h2u::Load_code_block(L"mdo_suffix_ex") << sgm::h2u::newl;
+	h2u::mdo
+	<<	h2u::Title(L"Literal Suffixes")
+	<<	h2u::Title(L"\"\"_mdo for Tabless Description", 2)
+	<<	h2u::Load_code_block(L"mdo_suffix_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(mdo_suffix_ex)
-	sgm::h2u::mdo
+	h2u::mdo
 	<<	LR"(
 			If you want to write something verbose, 
 			pre-defined literal operator ""_mdo should be helpful.
@@ -475,19 +475,19 @@ BEGIN_CODE_BLOCK(mdo_suffix_ex)
 		)"_mdo;
 END_CODE_BLOCK(mdo_suffix_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 
 
-	sgm::h2u::mdo
-	<<	sgm::h2u::Title(L"\"\"_code for Pseudo Code", 2)
+	h2u::mdo
+	<<	h2u::Title(L"\"\"_code for Pseudo Code", 2)
 	<<	L"Sometimes, it can be effective to use peudo code which is not excutable "
 	<<	L"but easy to understand when you explain a logic and how it works. "
 	<<	L"A pre-defined literal operator \"\"_code helps you write the pseudo code very easily."
-	<<	sgm::h2u::newl
-	<<	sgm::h2u::Load_code_block(L"pseudo_code_ex") << sgm::h2u::newl;
+	<<	h2u::newl
+	<<	h2u::Load_code_block(L"pseudo_code_ex") << h2u::newl;
 
 BEGIN_CODE_BLOCK(pseudo_code_ex)
-	sgm::h2u::mdo 
+	h2u::mdo 
 	<<	LR"(
 			Selection_Sort(A[], n)
 			    for last <- downto 2
@@ -496,20 +496,20 @@ BEGIN_CODE_BLOCK(pseudo_code_ex)
 		)"_code;
 END_CODE_BLOCK(pseudo_code_ex)
 
-	sgm::h2u::mdo << sgm::h2u::empty_line;
+	h2u::mdo << h2u::empty_line;
 }
 
 
 static void outro()
 {
-	sgm::h2u::mdo 
-	<<	L"----" << sgm::h2u::newl
-	<<	sgm::h2u::HTML_tag(L"Thank you for watching", L"strong center") << sgm::h2u::newl;
+	h2u::mdo 
+	<<	L"----" << h2u::newl
+	<<	h2u::HTML_tag(L"Thank you for watching", L"strong center") << h2u::newl;
 }
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-SGM_HOW2USE_TESTS(sgm::h2u::Guide_, How2use, /**/)
+H2U_HOW2USE_TESTS(h2u::Guide_, How2use, /**/)
 {	::intro
 ,	::Math_Expression
 ,	::Code_Block

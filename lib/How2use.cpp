@@ -4,7 +4,7 @@
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-#include "SGM/How2use.hpp"
+#include "How2use.hpp"
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -16,15 +16,15 @@ using dir_t = wstring;
 
 
 auto operator ""_mdo(wchar_t const* str, size_t)
-->	sgm::h2u::_tabless_description{  return wstring(str);  }
+->	h2u::_tabless_description{  return wstring(str);  }
 
 
 auto operator ""_code(wchar_t const* str, size_t)
-->	sgm::h2u::_code_description{  return wstring(str);  }
+->	h2u::_code_description{  return wstring(str);  }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-auto sgm::h2u::_Mbs_to_Wcs(std::string const& mbs)-> std::wstring
+auto h2u::_Mbs_to_Wcs(std::string const& mbs)-> std::wstring
 {
 	std::wstring res(mbs.size(), L'\0');
     
@@ -34,7 +34,7 @@ auto sgm::h2u::_Mbs_to_Wcs(std::string const& mbs)-> std::wstring
 }
     	
 
-auto sgm::h2u::_Wcs_to_Mbs(std::wstring const& wcs)-> std::string
+auto h2u::_Wcs_to_Mbs(std::wstring const& wcs)-> std::string
 {
 	std::string res(wcs.size(), '\0');
     
@@ -45,16 +45,16 @@ auto sgm::h2u::_Wcs_to_Mbs(std::wstring const& wcs)-> std::string
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-struct sgm::h2u::_MD_Stream::_Contents{  std::queue<wstring> q = {};  };
+struct h2u::_MD_Stream::_Contents{  std::queue<wstring> q = {};  };
 
 
-sgm::h2u::_MD_Stream::_MD_Stream() 
+h2u::_MD_Stream::_MD_Stream() 
 :	_working_filepath(), _md_filepath(), _md_materials_dir(), _pcnts(new _Contents()){}
 
-sgm::h2u::_MD_Stream::~_MD_Stream(){  delete _pcnts;  }
+h2u::_MD_Stream::~_MD_Stream(){  delete _pcnts;  }
 
 
-auto sgm::h2u::_MD_Stream::instance()-> _MD_Stream&
+auto h2u::_MD_Stream::instance()-> _MD_Stream&
 {
 	static _MD_Stream res;
 
@@ -62,7 +62,7 @@ auto sgm::h2u::_MD_Stream::instance()-> _MD_Stream&
 }
 
 
-void sgm::h2u::_MD_Stream::open(dir_t const working_filepath)
+void h2u::_MD_Stream::open(dir_t const working_filepath)
 {
 	if(is_open())
 		return;
@@ -96,27 +96,27 @@ void sgm::h2u::_MD_Stream::open(dir_t const working_filepath)
 }
 
 
-bool sgm::h2u::_MD_Stream::is_open() const{  return _md_filepath != dir_t();  }
+bool h2u::_MD_Stream::is_open() const{  return _md_filepath != dir_t();  }
 
-void sgm::h2u::_MD_Stream::close()
+void h2u::_MD_Stream::close()
 {
 	_working_filepath = _md_filepath = _md_materials_dir = {};  
 
 	_pcnts->q = {};  
 }
 
-auto sgm::h2u::_MD_Stream::ever_used() const-> bool{  return !_pcnts->q.empty();  }
+auto h2u::_MD_Stream::ever_used() const-> bool{  return !_pcnts->q.empty();  }
 
-auto sgm::h2u::_MD_Stream::working_filepath() const
+auto h2u::_MD_Stream::working_filepath() const
 ->	dir_t const&{  return _working_filepath;  }
 
-auto sgm::h2u::_MD_Stream::md_filepath() const-> dir_t const&{  return _md_filepath;  }
+auto h2u::_MD_Stream::md_filepath() const-> dir_t const&{  return _md_filepath;  }
 
-auto sgm::h2u::_MD_Stream::md_materials_dir() const
+auto h2u::_MD_Stream::md_materials_dir() const
 ->	dir_t const&{  return _md_materials_dir;  }
 
 
-void sgm::h2u::_MD_Stream::print_and_close()
+void h2u::_MD_Stream::print_and_close()
 {
 	if(!is_open())
 		return;
@@ -131,19 +131,19 @@ void sgm::h2u::_MD_Stream::print_and_close()
 }
 
 
-void sgm::h2u::_MD_Stream::_push(wstring const& str)
+void h2u::_MD_Stream::_push(wstring const& str)
 {
 	_pcnts->q.push(str);  
 }
 
-void sgm::h2u::_MD_Stream::_push(wstring&& str)
+void h2u::_MD_Stream::_push(wstring&& str)
 {
 	_pcnts->q.push( std::move(str) );  
 }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::_MD_Stream_Guard::_MD_Stream_Guard(dir_t working_filepath) : is_successful(true)
+h2u::_MD_Stream_Guard::_MD_Stream_Guard(dir_t working_filepath) : is_successful(true)
 {
 	for(auto& c : working_filepath)
 		if(c == L'\\')
@@ -153,11 +153,11 @@ sgm::h2u::_MD_Stream_Guard::_MD_Stream_Guard(dir_t working_filepath) : is_succes
 }
 
 
-sgm::h2u::_MD_Stream_Guard::_MD_Stream_Guard(std::string working_filepath)
+h2u::_MD_Stream_Guard::_MD_Stream_Guard(std::string working_filepath)
 :	_MD_Stream_Guard( _Mbs_to_Wcs(working_filepath) ){}
 
 
-sgm::h2u::_MD_Stream_Guard::~_MD_Stream_Guard()
+h2u::_MD_Stream_Guard::~_MD_Stream_Guard()
 {
 	if(is_successful && mdo->ever_used())
 		mdo->print_and_close();
@@ -168,18 +168,18 @@ sgm::h2u::_MD_Stream_Guard::~_MD_Stream_Guard()
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::md_guard::md_guard(wstring begin) : md_guard(begin, begin){}
-sgm::h2u::md_guard::md_guard(wstring begin, wstring end) : _end(end){  mdo << begin; }
-sgm::h2u::md_guard::~md_guard(){  mdo << _end; }
+h2u::md_guard::md_guard(wstring begin) : md_guard(begin, begin){}
+h2u::md_guard::md_guard(wstring begin, wstring end) : _end(end){  mdo << begin; }
+h2u::md_guard::~md_guard(){  mdo << _end; }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::md_block_guard::md_block_guard(wstring s) 
+h2u::md_block_guard::md_block_guard(wstring s) 
 :	md_guard( wstring(L"```") + s + L"\n", L"```\n" ){}
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::html_block_guard::html_block_guard(wstring const& tags)
+h2u::html_block_guard::html_block_guard(wstring const& tags)
 {
 	std::queue<wstring> q;
 
@@ -204,9 +204,9 @@ sgm::h2u::html_block_guard::html_block_guard(wstring const& tags)
 }
 
 
-sgm::h2u::html_block_guard::~html_block_guard(){  mdo << _end;  }
+h2u::html_block_guard::~html_block_guard(){  mdo << _end;  }
 
-auto sgm::h2u::html_block_guard::_bracket(wstring const& s)
+auto h2u::html_block_guard::_bracket(wstring const& s)
 ->	wstring{  return wstring{L'<'} + s + L'>';  }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
@@ -223,16 +223,16 @@ static auto _is_empty_line(wstring const& line)-> bool
 
 static auto _file_exists(dir_t const& filepath)-> bool
 {
-	return std::wifstream( sgm::h2u::_Wcs_to_Mbs(filepath).c_str() ).is_open();
+	return std::wifstream( h2u::_Wcs_to_Mbs(filepath).c_str() ).is_open();
 }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::_tabless_description::_tabless_description(wstring&& s) 
+h2u::_tabless_description::_tabless_description(wstring&& s) 
 :	_str(  _tabless_string( std::move(s) )  ){}
 
 
-auto sgm::h2u::_tabless_description::_tabless_string(wstring&& str)-> wstring
+auto h2u::_tabless_description::_tabless_string(wstring&& str)-> wstring
 {
 	std::queue<wstring> qs;
 	size_t total_str_len = 0;
@@ -280,11 +280,11 @@ auto sgm::h2u::_tabless_description::_tabless_string(wstring&& str)-> wstring
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-sgm::h2u::_code_description::_code_description(wstring&& s) : _str( _Code_writing(s) ){}
+h2u::_code_description::_code_description(wstring&& s) : _str( _Code_writing(s) ){}
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-auto sgm::h2u::HTML_tag(wstring const& contents, wstring const& tag)-> wstring
+auto h2u::HTML_tag(wstring const& contents, wstring const& tag)-> wstring
 {
 	std::queue<wstring> tags;
 
@@ -317,7 +317,7 @@ auto sgm::h2u::HTML_tag(wstring const& contents, wstring const& tag)-> wstring
 }
 
 
-auto sgm::h2u::Load_image(wstring const& image_name, size_t const image_width)-> wstring
+auto h2u::Load_image(wstring const& image_name, size_t const image_width)-> wstring
 {
 	if( !::_file_exists(mdo->md_materials_dir() + L'/' + image_name) )
 		throw std::runtime_error("Cannot find the image file in ./md_materials directory.");
@@ -332,7 +332,7 @@ auto sgm::h2u::Load_image(wstring const& image_name, size_t const image_width)->
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-auto sgm::h2u::Empty_lines(size_t nof_el)-> wstring
+auto h2u::Empty_lines(size_t nof_el)-> wstring
 {
 	wstring const nbsp = L"&nbsp;  \n";
 	wstring spaces;
@@ -343,7 +343,7 @@ auto sgm::h2u::Empty_lines(size_t nof_el)-> wstring
 }
 
 
-auto sgm::h2u::Title(wstring const& title, unsigned const level)-> wstring
+auto h2u::Title(wstring const& title, unsigned const level)-> wstring
 {
 	wstring sharps{};
 
@@ -393,7 +393,7 @@ static auto Getline(std::wifstream& wis, std::wstring& wbuf)-> std::wifstream&
 }
 
 
-auto sgm::h2u::Load_code_block(wstring const code_block_tag) noexcept(false)-> wstring
+auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)-> wstring
 {
 	if( !::_file_exists(mdo->working_filepath()) )
 		throw std::runtime_error("the file to be loaded doesn't exist.");
@@ -455,7 +455,7 @@ auto sgm::h2u::Load_code_block(wstring const code_block_tag) noexcept(false)-> w
 }
 
 
-auto sgm::h2u::Load_description_file(wstring const& filename) noexcept(false)-> wstring
+auto h2u::Load_description_file(wstring const& filename) noexcept(false)-> wstring
 {
 	auto const filepath = mdo->md_materials_dir() + L'/' + filename;
 
@@ -482,7 +482,7 @@ auto sgm::h2u::Load_description_file(wstring const& filename) noexcept(false)-> 
 }
 
 
-auto sgm::h2u::_Code_writing(wstring const& str, wstring const& lang)-> wstring
+auto h2u::_Code_writing(wstring const& str, wstring const& lang)-> wstring
 {
 	auto tab_count_f
 	=	[](wstring const& line)-> size_t
