@@ -67,12 +67,12 @@ bool wt::Tests(wchar_t const* const module_title) noexcept
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-#include "SGM/Guide_How2use.hpp"
+#include "Guide_How2use.hpp"
 
 
 void test() noexcept(false)
 {
-    sgm::h2u::Guide_How2use::test();
+    h2u::Guide_How2use::test();
 }
 
 

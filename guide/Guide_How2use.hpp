@@ -5,16 +5,13 @@
 
 
 #pragma once
-#include "SGM/How2use.hpp"
+#include "How2use.hpp"
 
 
-namespace sgm
+namespace h2u
 {
-	namespace h2u
-	{
-	
-		SGM_HOW2USE_CLASS(Guide_, How2use, /**/);
-		
-	}
+
+	H2U_HOW2USE_CLASS(Guide_, How2use, /**/);
+
 }
 //========//========//========//========//=======#//========//========//========//========//=======#

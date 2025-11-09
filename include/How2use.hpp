@@ -5,8 +5,8 @@
 
 
 #pragma once
-#ifndef _SGM_HOW2USE_
-#define _SGM_HOW2USE_
+#ifndef _H2U_HOW2USE_
+#define _H2U_HOW2USE_
 
 
 #include <type_traits>
@@ -14,27 +14,24 @@
 #include <iostream>
 
 
-namespace sgm
+namespace h2u
 {
-    namespace h2u
-    {
 
-        class Specimen;
-        class Specimen_Logger;
-        class Specimen_Log_Guard;
+	class Specimen;
+	class Specimen_Logger;
+	class Specimen_Log_Guard;
 
-    }
 }
 
 #define BEGIN_CODE_BLOCK(TAG) /* nothing */
 #define END_CODE_BLOCK(TAG) /* nothing */
 
 #define END_CODE_BLOCK_AND_LOAD(TAG)  \
-    sgm::h2u::mdo << sgm::h2u::Load_code_block( sgm::h2u::_Mbs_to_Wcs(#TAG) );
+    h2u::mdo << h2u::Load_code_block( h2u::_Mbs_to_Wcs(#TAG) );
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
-class sgm::h2u::Specimen_Logger
+class h2u::Specimen_Logger
 {
 public:
     Specimen_Logger() = default;
@@ -45,7 +42,7 @@ public:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::Specimen
+class h2u::Specimen
 {
 public:
     enum class State
@@ -156,7 +153,7 @@ private:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::Specimen_Log_Guard
+class h2u::Specimen_Log_Guard
 {
 public:
     Specimen_Log_Guard(Specimen_Logger& logger){  Specimen::Begin_log(logger);  }
@@ -165,12 +162,10 @@ public:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-namespace sgm
+namespace h2u
 {
-    namespace h2u
-    {
 
-        template<class RG, class TEST>
+	template<class RG, class TEST>
         static auto Are_All_True(RG const& rg, TEST&& test)-> bool
         {
             for(auto const& x : rg)
@@ -258,50 +253,47 @@ namespace sgm
         }
 
 
-        enum class Assertion_Failure{};
+	enum class Assertion_Failure{};
 
-    }
 }
 
 
-#define _SGM_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(MACRO)  __##MACRO##__
+#define _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(MACRO)  __##MACRO##__
 
 
-#define SGM_H2U_ASSERT(...) \
+#define H2U_ASSERT(...) \
     [](bool const assertion_pass) noexcept(false)-> void \
     {   \
         if(assertion_pass)  \
             return; \
         \
         auto const file_path \
-        =   sgm::h2u::_Mbs_to_Wcs  \
-            (   _SGM_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) \
+        =   h2u::_Mbs_to_Wcs  \
+            (   _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) \
             );  \
         \
         auto const error_line \
-        =   std::to_wstring( _SGM_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(LINE) );  \
+        =   std::to_wstring( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(LINE) );  \
         \
         auto const log_msg \
         =   (   std::wstring{L"[Failure case] \n"} \
             +   L"  File : " + file_path + L'\n'  \
             +   L"  Line : " + error_line + L'\n' \
-            +   L"  " + sgm::h2u::_Mbs_to_Wcs(#__VA_ARGS__) \
+            +   L"  " + h2u::_Mbs_to_Wcs(#__VA_ARGS__) \
             +   L"\n\n" \
             );  \
         \
         std::wcout << log_msg; \
         \
-        throw sgm::h2u::Assertion_Failure{};  \
+        throw h2u::Assertion_Failure{};  \
     }( static_cast<bool>(__VA_ARGS__) )
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-namespace sgm
-{ 
-    namespace h2u
-    {
+namespace h2u
+{
 
-	    auto HTML_tag(std::wstring const& contents, std::wstring const& tag)-> std::wstring;
+	auto HTML_tag(std::wstring const& contents, std::wstring const& tag)-> std::wstring;
 	    auto Load_image(std::wstring const& img_name, size_t const img_width = 0)-> std::wstring;
 	    auto Empty_lines(size_t nof_empty_lines = 1)-> std::wstring;
         auto Title(std::wstring const& title, unsigned const level = 1)-> std::wstring;
@@ -344,27 +336,26 @@ namespace sgm
         struct _No_instance;
 
 		
-    	auto _Mbs_to_Wcs(std::string const& mbs)-> std::wstring;
-    	auto _Wcs_to_Mbs(std::wstring const& wcs)-> std::string;
-    
-    }
+	auto _Mbs_to_Wcs(std::string const& mbs)-> std::wstring;
+	auto _Wcs_to_Mbs(std::wstring const& wcs)-> std::string;
+
 }
 
 
-auto operator ""_code(wchar_t const* str, size_t)-> sgm::h2u::_code_description;
-auto operator ""_mdo(wchar_t const* str, size_t)-> sgm::h2u::_tabless_description;
+auto operator ""_code(wchar_t const* str, size_t)-> h2u::_code_description;
+auto operator ""_mdo(wchar_t const* str, size_t)-> h2u::_tabless_description;
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 
 
-class sgm::h2u::_tabless_description
+class h2u::_tabless_description
 {
 public:
 	_tabless_description(std::wstring&& s);
 
 private:
     template<class T, class _T, int>
-	friend struct sgm::h2u::_MD_Stream_Helper;
+	friend struct h2u::_MD_Stream_Helper;
 
 	std::wstring _str;
 
@@ -373,21 +364,21 @@ private:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::_code_description
+class h2u::_code_description
 {
 public:
 	_code_description(std::wstring&& s);
 
 private:
     template<class T, class _T, int>
-    friend struct sgm::h2u::_MD_Stream_Helper;
+    friend struct h2u::_MD_Stream_Helper;
 
 	std::wstring _str;
 };
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::_MD_Stream
+class h2u::_MD_Stream
 {
 public:
 	_MD_Stream(_MD_Stream const&) = delete;
@@ -426,7 +417,7 @@ private:
 
 
 template<class T>
-auto sgm::h2u::_MD_Stream::operator<<(T&& t)-> _MD_Stream&
+auto h2u::_MD_Stream::operator<<(T&& t)-> _MD_Stream&
 {
     _push(  _MD_Stream_Helper<T>::calc( std::forward<T>(t) )  );
 
@@ -435,41 +426,41 @@ auto sgm::h2u::_MD_Stream::operator<<(T&& t)-> _MD_Stream&
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-struct sgm::h2u::_No_instance
+struct h2u::_No_instance
 {
     _No_instance() = delete;
 };
 
 
 template<class T, class _T, int>
-struct sgm::h2u::_MD_Stream_Helper : _No_instance
+struct h2u::_MD_Stream_Helper : _No_instance
 {
     template<class Q>
     static auto calc(Q&& q)-> std::wstring{  return std::forward<Q>(q);  }    
 };
 
 template<class T, class _T>
-struct sgm::h2u::_MD_Stream_Helper<T, _T, 1> : _No_instance
+struct h2u::_MD_Stream_Helper<T, _T, 1> : _No_instance
 {
     template<class Q>
     static auto calc(Q&& q)-> decltype(q._str){  return q._str;  }
 };
 
 template<class T, class _T>
-struct sgm::h2u::_MD_Stream_Helper<T, _T, 2> : _No_instance
+struct h2u::_MD_Stream_Helper<T, _T, 2> : _No_instance
 {
     static auto calc(_T const b)-> std::wstring{  return b ? L"true" : L"false";  }
 };
 
 template<class T, class _T>
-struct sgm::h2u::_MD_Stream_Helper<T, _T, 3> : _No_instance
+struct h2u::_MD_Stream_Helper<T, _T, 3> : _No_instance
 {
     template<class Q>
     static auto calc(Q const s)-> std::wstring{  return std::to_wstring(s);  }
 };
 
 template<class T, class _T>
-struct sgm::h2u::_MD_Stream_Helper<T, _T, 4> : _No_instance
+struct h2u::_MD_Stream_Helper<T, _T, 4> : _No_instance
 {
     template<class P>
     static auto calc(P const p)
@@ -478,7 +469,7 @@ struct sgm::h2u::_MD_Stream_Helper<T, _T, 4> : _No_instance
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::_Singleton_MD_Streamer
+class h2u::_Singleton_MD_Streamer
 {
 public:
     template<class T>
@@ -490,22 +481,19 @@ public:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-namespace sgm
+namespace h2u
 {
-    namespace h2u
-    {
 
-	    static _Singleton_MD_Streamer const mdo = {};
+	static _Singleton_MD_Streamer const mdo = {};
 
-	    static std::wstring const newl = L"  \n";
-	    static std::wstring const empty_line = Empty_lines(1);
+	static std::wstring const newl = L"  \n";
+	static std::wstring const empty_line = Empty_lines(1);
 
-    }
 }
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::_MD_Stream_Guard
+class h2u::_MD_Stream_Guard
 {
 public:
 	_MD_Stream_Guard(std::wstring working_filepath);
@@ -518,7 +506,7 @@ public:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::md_guard
+class h2u::md_guard
 {
 public:
 	md_guard(std::wstring begin);
@@ -531,14 +519,14 @@ private:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-class sgm::h2u::md_block_guard : public md_guard
+class h2u::md_block_guard : public md_guard
 {
 public:
 	md_block_guard(std::wstring s = L"");
 };
 
 
-class sgm::h2u::html_block_guard
+class h2u::html_block_guard
 {
 public:
 	html_block_guard(std::wstring const& tags);
@@ -552,7 +540,7 @@ private:
 //--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
 
 
-#define SGM_HOW2USE_TESTS(PREFIX, TITLE, SUFFIX)   \
+#define H2U_HOW2USE_TESTS(PREFIX, TITLE, SUFFIX)   \
     struct __##TITLE##_Helper   \
     {   \
         static std::initializer_list<void(*)()> test_list;   \
@@ -560,17 +548,17 @@ private:
     \
     void PREFIX##TITLE##SUFFIX::test()  \
     {   \
-        sgm::h2u::_MD_Stream_Guard guard( _SGM_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) );  \
+        h2u::_MD_Stream_Guard guard( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) );  \
         \
         guard.is_successful = true;    \
         \
-        auto const title_wstr = sgm::h2u::_Mbs_to_Wcs(#TITLE); \
+        auto const title_wstr = h2u::_Mbs_to_Wcs(#TITLE); \
         \
         std::wcout << title_wstr << L" test starts.\n";    \
         \
         for(auto _test : __##TITLE##_Helper::test_list)  \
             try{  _test();  }   \
-            catch(sgm::h2u::Assertion_Failure const){  guard.is_successful = false;  } \
+            catch(h2u::Assertion_Failure const){  guard.is_successful = false;  } \
         \
         std::wcout << title_wstr << L" test ends.\n";   \
         \
@@ -583,7 +571,7 @@ private:
     std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
 
 
-#define SGM_HOW2USE_CLASS(PREFIX, TITLE, SUFFIX)  \
+#define H2U_HOW2USE_CLASS(PREFIX, TITLE, SUFFIX)  \
     struct PREFIX##TITLE##SUFFIX    \
     {   \
         PREFIX##TITLE##SUFFIX() = delete;   \
@@ -592,4 +580,4 @@ private:
     }
 
 
-#endif // end of #ifndef _SGM_HOW2USE_
+#endif // end of #ifndef _H2U_HOW2USE_

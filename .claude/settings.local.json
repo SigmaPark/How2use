@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv:*)",
+      "Bash(cmake --build:*)",
+      "Bash(./How2use_guide.exe)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
