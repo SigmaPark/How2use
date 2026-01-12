@@ -290,10 +290,10 @@ namespace h2u{
 				std::is_same<_T, _code_description>::value
 			)
 			? 1 :
-				std::is_same<_T, bool>::value ? 2 :
-					std::is_convertible<_T, double>::value ? 3 :
-						std::is_pointer<_T>::value ? 4 : 
-							/* otherwise */ 0
+			std::is_same<_T, bool>::value ? 2 :
+			std::is_convertible<_T, double>::value ? 3 :
+			std::is_pointer<_T>::value ? 4 : 
+			0
 	>
 	struct _MD_Stream_Helper;
 
