@@ -6,9 +6,6 @@
 
 #pragma once
 
-namespace wt
-{
-
+namespace wt{
     bool Tests(wchar_t const* const module_title) noexcept;
-
 }

@@ -8,10 +8,7 @@
 #include "How2use.hpp"
 
 
-namespace h2u
-{
-
+namespace h2u{
 	H2U_HOW2USE_CLASS(Guide_, How2use, /**/);
-
 }
 //========//========//========//========//=======#//========//========//========//========//=======#

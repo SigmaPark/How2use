@@ -15,54 +15,49 @@ template<class = void>
 static void log_message() noexcept{}
 
 template<class A, class...ARGS>
-static void log_message(A&& a, ARGS&&...args) noexcept
-{
-    std::wcout << static_cast<A&&>(a);
-    
+static void log_message(A&& a, ARGS&&...args) noexcept{
+	std::wcout << static_cast<A&&>(a);
+
 	log_message( static_cast<ARGS&&>(args)... );
 }
 
 
-static void system_pause() noexcept
-{
-    std::wcout << L"Press Enter key to continue. . .";
-    std::cin.get();   
+static void system_pause() noexcept{
+	std::wcout << L"Press Enter key to continue. . .";
+	std::cin.get();
 }
 
 
-bool wt::Tests(wchar_t const* const module_title) noexcept
-{
-    ::log_message
-    (   L"//========//========//========//========//=======#\n"
-    ,   module_title, L" test Start\n"
-    );
+bool wt::Tests(wchar_t const* const module_title) noexcept{
+	::log_message(
+		L"//========//========//========//========//=======#\n",
+		module_title, L" test Start\n"
+	);
 
-    try
-    {
-        ::test();
+	try{
+		::test();
 
-        ::log_message
-        (   module_title, L" test Complete\n"
-        ,   L"//========//========//========//========//=======#\n"
-        );
+		::log_message(
+			module_title, L" test Complete\n",
+			L"//========//========//========//========//=======#\n"
+		);
 
-        ::system_pause();
-        
-        return true;
-    }
-    catch(...)
-    {
-        std::wcout << L"Error occurs!\n";
-    }
+		::system_pause();
 
-    ::log_message
-    (   module_title, L" test Failed"
-    ,   L"//========//========//========//========//=======#\n"
-    );
+		return true;
+	}
+	catch(...){
+		std::wcout << L"Error occurs!\n";
+	}
 
-    ::system_pause();
+	::log_message(
+		module_title, L" test Failed",
+		L"//========//========//========//========//=======#\n"
+	);
 
-    return false;
+	::system_pause();
+
+	return false;
 }
 //========//========//========//========//=======#//========//========//========//========//=======#
 
@@ -70,22 +65,20 @@ bool wt::Tests(wchar_t const* const module_title) noexcept
 #include "Guide_How2use.hpp"
 
 
-void test() noexcept(false)
-{
-    h2u::Guide_How2use::test();
+void test() noexcept(false){
+	h2u::Guide_How2use::test();
 }
 
 
-int main(int const, char const* const[])
-{
-    wchar_t const* const os   
+int main(int const, char const* const []){
+	wchar_t const* const os =
 #if defined(_WINDOWS_SOLUTION_)
-    =   L"Windows";
+		L"Windows";
 #elif defined(_POSIX_SOLUTION_)
-    =   L"POSIX";
+		L"POSIX";
 #else
-    =   L"Others";
+		L"Others";
 #endif
 
-    return wt::Tests(os),  (int)0;
+	return wt::Tests(os), (int)0;
 }
