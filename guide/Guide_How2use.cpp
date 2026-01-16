@@ -332,7 +332,7 @@ END_CODE_BLOCK_AND_LOAD(specimen_template_test)
 static void External_Resources(){
 	h2u::mdo << h2u::Title(L"External Resources") <<
 	L"All external materials you want to attach to a document are to be located at " <<
-	L"\"\\md_materials\"" <<
+	L"\"/md_materials\"" <<
 	h2u::empty_line;
 
 	h2u::mdo << h2u::Title(L"Text File", 2) <<
