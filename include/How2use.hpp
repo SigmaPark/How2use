@@ -3,16 +3,13 @@
 */
 //========//========//========//========//=======#//========//========//========//========//=======#
 
-
 #pragma once
 #ifndef _H2U_HOW2USE_
 #define _H2U_HOW2USE_
 
-
 #include <type_traits>
 #include <string>
 #include <iostream>
-
 
 namespace h2u{
 	class Specimen;
@@ -25,47 +22,52 @@ namespace h2u{
 
 #define END_CODE_BLOCK_AND_LOAD(TAG)  \
     h2u::mdo << h2u::Load_code_block( h2u::_Mbs_to_Wcs(#TAG) );
-//========//========//========//========//=======#//========//========//========//========//=======#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::Specimen_Logger{
-public :
+public:
 	Specimen_Logger() = default;
 	virtual ~Specimen_Logger() = default;
 
-	virtual void log(std::wstring const& log_message) = 0;
+	virtual void log(std::wstring const &log_message) = 0;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::Specimen{
-public :
+public:
 	enum class State{
 		DEFAULT_CONSTRUCTION, MANUAL_CONSTRUCTION, COPY_CONSTRUCTION, MOVE_CONSTRUCTION,
 		COPY_ASSIGNMENT, MOVE_ASSIGNMENT, DESTRUCTION, MOVE_AWAY
 	};
 
-
-	Specimen() :
-		_state(State::DEFAULT_CONSTRUCTION), _value(0)
+	Specimen()
+	:
+		_state(State::DEFAULT_CONSTRUCTION),
+		_value(0)
 	{
 		_Log(L"default_construction");
 	}
 
-	Specimen(int val) :
-		_state(State::MANUAL_CONSTRUCTION), _value(val)
+	Specimen(int val)
+	:
+		_state(State::MANUAL_CONSTRUCTION),
+		_value(val)
 	{
 		_Log(L"manual_construction");
 	}
 
-	Specimen(Specimen const& s) :
-		_state(State::COPY_CONSTRUCTION), _value(s.value())
+	Specimen(Specimen const &s)
+	:
+		_state(State::COPY_CONSTRUCTION),
+		_value(s.value())
 	{
 		_Log(L"copy_construction");
 	}
 
-	Specimen(Specimen&& s) noexcept :
-		_state(State::MOVE_CONSTRUCTION), _value(s.value()) 
+	Specimen(Specimen &&s) noexcept
+	:
+		_state(State::MOVE_CONSTRUCTION),
+		_value(s.value())
 	{
 		s._state = State::MOVE_AWAY;
 
@@ -75,13 +77,13 @@ public :
 	~Specimen(){
 		if(_state == State::DESTRUCTION){ return; }
 
-		value() = -1, _state = State::DESTRUCTION;
+		value() = -1;
+		_state = State::DESTRUCTION;
 
 		_Log(L"destruction");
 	}
 
-
-	auto operator=(Specimen const& s)->Specimen&{
+	auto operator=(Specimen const &s)->Specimen &{
 		_state = State::COPY_ASSIGNMENT;
 		value() = s.value();
 		_Log(L"copy_assignment");
@@ -89,7 +91,7 @@ public :
 		return *this;
 	}
 
-	auto operator=(Specimen&& s) noexcept->Specimen&{
+	auto operator=(Specimen &&s) noexcept->Specimen &{
 		_state = State::MOVE_ASSIGNMENT;
 		value() = s.value();
 		s._state = State::MOVE_AWAY;
@@ -98,76 +100,71 @@ public :
 		return *this;
 	}
 
-
 	auto state() const noexcept->State{ return _state; }
 	auto value() const noexcept->int{ return _value; }
-	auto value() noexcept->int&{ return _value; }
-	auto operator==(Specimen const& s) const noexcept->bool{ return value() == s.value(); }
-	auto operator==(State const t) const noexcept-> bool{ return state() == t; }
+	auto value() noexcept->int &{ return _value; }
+	auto operator==(Specimen const &s) const noexcept->bool{ return value() == s.value(); }
+	auto operator==(State const t) const noexcept->bool{ return state() == t; }
 
 	template<class T>
 	auto operator!=(T t) const noexcept->bool{ return !(*this == t); }
 
-
-	static void Begin_log(Specimen_Logger& logger) noexcept{
+	static void Begin_log(Specimen_Logger &logger) noexcept{
 		_Logger_ptr() = std::addressof(logger);
 	}
 
 	static void End_log() noexcept{ _Logger_ptr() = nullptr; }
-
-
-private :
+	//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
+private:
 	State _state;
 	int _value;
 
-
-	static auto _Logger_ptr() noexcept->Specimen_Logger*&{
-		static Specimen_Logger* ptr = nullptr;
+	static auto _Logger_ptr() noexcept->Specimen_Logger *&{
+		static Specimen_Logger *ptr = nullptr;
 
 		return ptr;
 	}
 
-
-	static void _Log(std::wstring const& log_str){
+	static void _Log(std::wstring const &log_str){
 		if(_Logger_ptr() != nullptr){
-			_Logger_ptr()->log(log_str); 
+			_Logger_ptr()->log(log_str);
 		}
 	}
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::Specimen_Log_Guard{
-public :
-	Specimen_Log_Guard(Specimen_Logger& logger){ Specimen::Begin_log(logger); }
+public:
+	Specimen_Log_Guard(Specimen_Logger &logger){ Specimen::Begin_log(logger); }
 	~Specimen_Log_Guard(){ Specimen::End_log(); }
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 namespace h2u{
 	template<class RG, class TEST>
-	static auto Are_All_True(RG const& rg, TEST&& test)->bool{
-		for(auto const& x : rg){
-			if( !test(x) ){ return false; }
+	static auto Are_All_True(RG const &rg, TEST &&test)->bool{
+		for(auto const &x : rg){
+			if( !test(x) ){
+				return false;
+			}
 		}
 
 		return true;
 	}
-
 
 	template<class ITR, class TEST>
-	static auto Are_N_True(ITR itr, size_t n, TEST&& test)->bool{
-		while(n--> 0){
-			if( !test(*itr++) ){ return false; }
+	static auto Are_N_True(ITR itr, size_t n, TEST &&test)->bool{
+		while(n-- > 0){
+			if( !test(*itr++) ){
+				return false;
+			}
 		}
 
 		return true;
 	}
 
-
 	template<class RG1, class RG2, class EQ>
-	static auto Are_Equivalent_Ranges(RG1 const& rg1, RG2 const& rg2, EQ&& eq)->bool{
+	static auto Are_Equivalent_Ranges(RG1 const &rg1, RG2 const &rg2, EQ &&eq)->bool{
 		auto itr1 = std::begin(rg1);
 		auto itr2 = std::begin(rg2);
 		auto const end1 = std::end(rg1);
@@ -179,98 +176,105 @@ namespace h2u{
 	}
 
 	template<class RG1, class RG2>
-	static auto Are_Equivalent_Ranges(RG1 const& rg1, RG2 const& rg2)->bool{
+	static auto Are_Equivalent_Ranges(RG1 const &rg1, RG2 const &rg2)->bool{
 		using _T1 = decltype( *std::begin(rg1) );
 		using _T2 = decltype( *std::begin(rg2) );
 
 		return
-		Are_Equivalent_Ranges(
-			rg1, rg2, [](_T1 const& t1, _T2 const& t2)->bool{ return t1 == t2; }
-		);
+			Are_Equivalent_Ranges(
+				rg1, rg2, [](_T1 const &t1, _T2 const &t2)->bool{ return t1 == t2; }
+			)
+		;
 	}
 
-
 	template<class RG, class T, class EQ>
-	static auto Are_All_Equivalent_to(RG const& rg, T const& t, EQ&& eq)->bool{
+	static auto Are_All_Equivalent_to(RG const &rg, T const &t, EQ &&eq)->bool{
 		using _T = decltype( *std::begin(rg) );
 
 		return 
-		Are_All_True(
-			rg, [t, eq](_T const& _t)->bool{ return eq(_t, t); } 
-		);
+			Are_All_True(
+				rg, [t, eq](_T const &_t)->bool{ return eq(_t, t); } 
+			)
+		;
 	}
 
 	template<class RG, class T>
-	static auto Are_All_Equivalent_to(RG const& rg, T const& t)->bool{
+	static auto Are_All_Equivalent_to(RG const &rg, T const &t)->bool{
 		using _T = decltype( *std::begin(rg) );
 
 		return
-		Are_All_Equivalent_to(
-			rg, t, [](_T const& t1, T const& t2)->bool{ return t1 == t2; }
-		);
+			Are_All_Equivalent_to(
+				rg, t, [](_T const &t1, T const &t2)->bool{ return t1 == t2; }
+			)
+		;
 	}
 
 	template<class ITR, class T, class EQ>
-	static auto Are_N_Equivalent_to(ITR const itr, size_t const n, T const& t, EQ&& eq)->bool{
+	static auto Are_N_Equivalent_to(ITR const itr, size_t const n, T const &t, EQ &&eq)->bool{
 		using _T = decltype(*itr);
 
 		return 
-		Are_N_True(
-			itr, n, [t, eq](_T const& _t)->bool{ return eq(_t, t); }
-		);
+			Are_N_True(
+				itr, n, [t, eq](_T const &_t)->bool{ return eq(_t, t); }
+			)
+		;
 	}
 
 	template<class ITR, class T>
-	static auto Are_N_Equivalent_to(ITR const itr, size_t const n, T const& t)->bool{
+	static auto Are_N_Equivalent_to(ITR const itr, size_t const n, T const &t)->bool{
 		using _T = decltype(*itr);
 
 		return
-		Are_N_Equivalent_to(
-			itr, n, t, [](_T const& t1, T const& t2)->bool{ return t1 == t2; }
-		);
+			Are_N_Equivalent_to(
+				itr, n, t, [](_T const &t1, T const &t2)->bool{ return t1 == t2; }
+			)
+		;
 	}
 
 	enum class Assertion_Failure{};
 }
 
-
 #define _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(MACRO)  __##MACRO##__
-
 
 #define H2U_ASSERT(...) \
     [](bool const assertion_pass) noexcept(false)->void{ \
         if(assertion_pass){ return; } \
         \
-        auto const file_path = \
-			h2u::_Mbs_to_Wcs(	\
+        auto const \
+			file_path \
+			= h2u::_Mbs_to_Wcs(	\
 				_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) \
-			);  \
+			) \
+		;  \
         \
-        auto const error_line = \
-			std::to_wstring( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(LINE) );  \
+        auto const \
+			error_line \
+			= std::to_wstring( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(LINE) ) \
+		; \
         \
-        auto const log_msg = \
-			std::wstring{L"[Failure case] \n"} + \
-			L"  File : " + file_path + L'\n' + \
-			L"  Line : " + error_line + L'\n' + \
-			L"  " + h2u::_Mbs_to_Wcs(#__VA_ARGS__) + \
-			L"\n\n"; \
+        auto const \
+			log_msg \
+			= std::wstring{L"[Failure case] \n"} \
+			+ L"  File : " + file_path + L'\n' \
+			+ L"  Line : " + error_line + L'\n' \
+			+ L"  " + h2u::_Mbs_to_Wcs(#__VA_ARGS__) \
+			+ L"\n\n" \
+		; \
         \
         std::wcout << log_msg; \
         \
         throw h2u::Assertion_Failure{};  \
     }\
 	( static_cast<bool>(__VA_ARGS__) )
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 namespace h2u{
-	auto HTML_tag(std::wstring const& contents, std::wstring const& tag)->std::wstring;
-	auto Load_image(std::wstring const& img_name, size_t const img_width = 0)->std::wstring;
+	auto HTML_tag(std::wstring const &contents, std::wstring const &tag)->std::wstring;
+	auto Load_image(std::wstring const &img_name, size_t const img_width = 0)->std::wstring;
 	auto Empty_lines(size_t nof_empty_lines = 1)->std::wstring;
-	auto Title(std::wstring const& title, unsigned const level = 1)->std::wstring;
+	auto Title(std::wstring const &title, unsigned const level = 1)->std::wstring;
 
-	auto Load_description_file(std::wstring const& filename) noexcept(false)->std::wstring;
+	auto Load_description_file(std::wstring const &filename) noexcept(false)->std::wstring;
 	auto Load_code_block(std::wstring const code_block_tag) noexcept(false)->std::wstring;
 
 	class md_guard;
@@ -284,162 +288,162 @@ namespace h2u{
 
 	template<
 		class T, class _T = std::remove_cv_t< std::remove_reference_t<T> >,
-		int =
-			(	
-				std::is_same<_T, _tabless_description>::value || 
-				std::is_same<_T, _code_description>::value
-			)
-			? 1 :
-			std::is_same<_T, bool>::value ? 2 :
-			std::is_convertible<_T, double>::value ? 3 :
-			std::is_pointer<_T>::value ? 4 : 
-			0
+		int
+		= (
+			std::is_same<_T, _tabless_description>::value
+			|| std::is_same<_T, _code_description>::value
+		)
+		? 1
+		: (
+			std::is_same<_T, bool>::value ? 2
+			: std::is_convertible<_T, double>::value ? 3
+			: std::is_pointer<_T>::value ? 4
+			: 0
+		)
 	>
 	struct _MD_Stream_Helper;
-
 
 	class _Singleton_MD_Streamer;
 	class _MD_Stream_Guard;
 
-	auto _Code_writing(std::wstring const& code, std::wstring const& lang = L"")->std::wstring;
+	auto _Code_writing(std::wstring const &code, std::wstring const &lang = L"")->std::wstring;
 
 	struct _No_instance;
 
-
-	auto _Mbs_to_Wcs(std::string const& mbs)->std::wstring;
-	auto _Wcs_to_Mbs(std::wstring const& wcs)->std::string;
+	auto _Mbs_to_Wcs(std::string const &mbs)->std::wstring;
+	auto _Wcs_to_Mbs(std::wstring const &wcs)->std::string;
 }
 
-
-auto operator ""_code(wchar_t const* str, size_t)->h2u::_code_description;
-auto operator ""_mdo(wchar_t const* str, size_t)->h2u::_tabless_description;
-//========//========//========//========//=======#//========//========//========//========//=======#
-
-
+auto operator ""_code(wchar_t const *str, size_t)->h2u::_code_description;
+auto operator ""_mdo(wchar_t const *str, size_t)->h2u::_tabless_description;
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_tabless_description{
-public :
-	_tabless_description(std::wstring&& s);
-
-private :
+public:
+	_tabless_description(std::wstring &&s);
+private:
 	template<class T, class _T, int>
 	friend struct h2u::_MD_Stream_Helper;
 
 	std::wstring _str;
 
-	static auto _tabless_string(std::wstring&& s)->std::wstring;
+	static auto _tabless_string(std::wstring &&s)->std::wstring;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_code_description{
-public :
-	_code_description(std::wstring&& s);
-
-private :
+public:
+	_code_description(std::wstring &&s);
+private:
 	template<class T, class _T, int>
 	friend struct h2u::_MD_Stream_Helper;
 
 	std::wstring _str;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_MD_Stream{
-public :
-	_MD_Stream(_MD_Stream const&) = delete;
-	auto operator=(_MD_Stream const&)->_MD_Stream& = delete;
+public:
+	_MD_Stream(_MD_Stream const &) = delete;
+	auto operator=(_MD_Stream const &)->_MD_Stream & = delete;
 
-	static auto instance()->_MD_Stream&;
+	static auto instance()->_MD_Stream &;
 
 	void open(std::wstring const working_filepath);
 	bool is_open() const;
 
 	auto ever_used() const->bool;
-	auto working_filepath() const->std::wstring const&;
-	auto md_filepath() const->std::wstring const&;
-	auto md_materials_dir() const->std::wstring const&;
+	auto working_filepath() const->std::wstring const &;
+	auto md_filepath() const->std::wstring const &;
+	auto md_materials_dir() const->std::wstring const &;
 
 	void close();
 	void print_and_close();
 
 	template<class T>
-	auto operator<<(T&& t)->_MD_Stream&;
-
-
-private :
+	auto operator<<(T &&t)->_MD_Stream &;
+private:
 	_MD_Stream();
 	~_MD_Stream();
-
 
 	struct _Contents;
 
 	std::wstring _working_filepath, _md_filepath, _md_materials_dir;
-	_Contents* _pcnts;
+	_Contents *_pcnts;
 
-	void _push(std::wstring const& str);
-	void _push(std::wstring&& str);
+	void _push(std::wstring const &str);
+	void _push(std::wstring &&str);
 };
 
-
 template<class T>
-auto h2u::_MD_Stream::operator<<(T&& t)->_MD_Stream&{
+auto h2u::_MD_Stream::operator<<(T &&t)->_MD_Stream &{
 	_push(  _MD_Stream_Helper<T>::calc( std::forward<T>(t) )  );
 
 	return *this;
 }
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 struct h2u::_No_instance{
 	_No_instance() = delete;
 };
 
-
 template<class T, class _T, int>
-struct h2u::_MD_Stream_Helper : _No_instance{
+struct h2u::_MD_Stream_Helper
+:
+	_No_instance
+{
 	template<class Q>
-	static auto calc(Q&& q)->std::wstring{ return std::forward<Q>(q); }
+	static auto calc(Q &&q)->std::wstring{ return std::forward<Q>(q); }
 };
 
 template<class T, class _T>
-struct h2u::_MD_Stream_Helper<T, _T, 1> : _No_instance{
+struct h2u::_MD_Stream_Helper<T, _T, 1>
+:
+	_No_instance
+{
 	template<class Q>
-	static auto calc(Q&& q)->decltype(q._str){ return q._str; }
+	static auto calc(Q &&q)->decltype(q._str){ return q._str; }
 };
 
 template<class T, class _T>
-struct h2u::_MD_Stream_Helper<T, _T, 2> : _No_instance{
+struct h2u::_MD_Stream_Helper<T, _T, 2>
+:
+	_No_instance
+{
 	static auto calc(_T const b)->std::wstring{ return b ? L"true" : L"false"; }
 };
 
 template<class T, class _T>
-struct h2u::_MD_Stream_Helper<T, _T, 3> : _No_instance{
+struct h2u::_MD_Stream_Helper<T, _T, 3>
+:
+	_No_instance
+{
 	template<class Q>
 	static auto calc(Q const s)->std::wstring{ return std::to_wstring(s); }
 };
 
 template<class T, class _T>
-struct h2u::_MD_Stream_Helper<T, _T, 4> : _No_instance{
+struct h2u::_MD_Stream_Helper<T, _T, 4>
+:
+	_No_instance
+{
 	template<class P>
 	static auto calc(P const p)->std::wstring{
 		return std::to_wstring( reinterpret_cast<long long>(p) );
 	}
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_Singleton_MD_Streamer{
-public :
+public:
 	template<class T>
-	auto operator<<(T&& t) const->_MD_Stream&{
+	auto operator<<(T &&t) const->_MD_Stream &{
 		return _MD_Stream::instance() << std::forward<T>(t);
 	}
 
-	auto operator->() const->_MD_Stream*{ return &_MD_Stream::instance(); }
+	auto operator->() const->_MD_Stream *{ return &_MD_Stream::instance(); }
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 namespace h2u{
 	static _Singleton_MD_Streamer const mdo = {};
@@ -447,50 +451,46 @@ namespace h2u{
 	static std::wstring const newl = L"  \n";
 	static std::wstring const empty_line = Empty_lines(1);
 }
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_MD_Stream_Guard{
-public :
+public:
 	_MD_Stream_Guard(std::wstring working_filepath);
 	_MD_Stream_Guard(std::string working_filepath);
 	~_MD_Stream_Guard();
 
 	bool is_successful;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::md_guard{
-public :
+public:
 	md_guard(std::wstring begin);
 	md_guard(std::wstring begin, std::wstring end);
 	~md_guard();
-
-private :
+private:
 	std::wstring _end;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
-
-class h2u::md_block_guard : public md_guard{
-public :
+class h2u::md_block_guard
+:
+	public md_guard
+{
+public:
 	md_block_guard(std::wstring s = L"");
 };
 
-
 class h2u::html_block_guard{
-public :
-	html_block_guard(std::wstring const& tags);
+public:
+	html_block_guard(std::wstring const &tags);
 	~html_block_guard();
-
-private :
+private:
 	std::wstring _end = {};
 
-	static auto _bracket(std::wstring const& s)->std::wstring;
+	static auto _bracket(std::wstring const &s)->std::wstring;
 };
-//--------//--------//--------//--------//-------#//--------//--------//--------//--------//-------#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #define H2U_HOW2USE_TESTS(PREFIX, TITLE, SUFFIX)   \
     struct __##TITLE##_Helper{ \
@@ -507,21 +507,23 @@ private :
         std::wcout << title_wstr << L" test starts.\n";    \
         \
         for(auto _test : __##TITLE##_Helper::test_list){ \
-            try{ _test(); }   \
-            catch(h2u::Assertion_Failure const){ guard.is_successful = false; } \
-		}	\
+            try{ \
+				_test(); \
+			} catch(h2u::Assertion_Failure const){ \
+				guard.is_successful = false; \
+			} \
+		} \
         \
-        std::wcout << title_wstr << L" test ends.\n";   \
+        std::wcout << title_wstr << L" test ends.\n"; \
         \
-        if(guard.is_successful){  \
+        if(guard.is_successful){ \
             std::wcout << L"All cases pass! \n"; \
-		}	\
+		} \
         \
-        std::wcout << L"//--------//--------//--------//--------//--------\n";    \
-    }   \
+        std::wcout << L"//--------//--------//--------//--------//--------\n"; \
+    } \
     \
     std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
-
 
 #define H2U_HOW2USE_CLASS(PREFIX, TITLE, SUFFIX)  \
     struct PREFIX##TITLE##SUFFIX{ \
@@ -529,6 +531,5 @@ private :
         \
         static void test(); \
     }
-
 
 #endif // end of #ifndef _H2U_HOW2USE_
