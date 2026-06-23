@@ -3,32 +3,27 @@
 */
 //========//========//========//========//=======#//========//========//========//========//=======#
 
-
 #include "WorldTest.hpp"
 #include <iostream>
 
-
 static void test() noexcept(false);
-
 
 template<class = void>
 static void log_message() noexcept{}
 
-template<class A, class...ARGS>
-static void log_message(A&& a, ARGS&&...args) noexcept{
-	std::wcout << static_cast<A&&>(a);
+template<class A, class ...ARGS>
+static void log_message(A &&a, ARGS &&...args) noexcept{
+	std::wcout << static_cast<A &&>(a);
 
-	log_message( static_cast<ARGS&&>(args)... );
+	log_message( static_cast<ARGS &&>(args)... );
 }
-
 
 static void system_pause() noexcept{
 	std::wcout << L"Press Enter key to continue. . .";
 	std::cin.get();
 }
 
-
-bool wt::Tests(wchar_t const* const module_title) noexcept{
+auto wt::Tests(wchar_t const * const module_title) noexcept->bool{
 	::log_message(
 		L"//========//========//========//========//=======#\n",
 		module_title, L" test Start\n"
@@ -45,8 +40,7 @@ bool wt::Tests(wchar_t const* const module_title) noexcept{
 		::system_pause();
 
 		return true;
-	}
-	catch(...){
+	} catch(...){
 		std::wcout << L"Error occurs!\n";
 	}
 
@@ -59,26 +53,25 @@ bool wt::Tests(wchar_t const* const module_title) noexcept{
 
 	return false;
 }
-//========//========//========//========//=======#//========//========//========//========//=======#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #include "Guide_How2use.hpp"
-
 
 void test() noexcept(false){
 	h2u::Guide_How2use::test();
 }
 
-
-int main(int const, char const* const []){
-	wchar_t const* const os =
+auto main(int const, char const * const [])->int{
+	wchar_t const * const
+		os
 #if defined(_WINDOWS_SOLUTION_)
-		L"Windows";
+		= L"Windows"
 #elif defined(_POSIX_SOLUTION_)
-		L"POSIX";
+		= L"POSIX"
 #else
-		L"Others";
+		= L"Others"
 #endif
+	;
 
-	return wt::Tests(os), (int)0;
+	return wt::Tests(os), 0;
 }

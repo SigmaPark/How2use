@@ -3,9 +3,8 @@
 */
 //========//========//========//========//=======#//========//========//========//========//=======#
 
-
 #pragma once
 
 namespace wt{
-    bool Tests(wchar_t const* const module_title) noexcept;
+	auto Tests(wchar_t const * const module_title) noexcept->bool;
 }
