@@ -21,7 +21,7 @@ namespace h2u{
 #define END_CODE_BLOCK(TAG) /* nothing */
 
 #define END_CODE_BLOCK_AND_LOAD(TAG)  \
-    h2u::mdo << h2u::Load_code_block( h2u::_Mbs_to_Wcs(#TAG) );
+	h2u::mdo << h2u::Load_code_block( h2u::_Mbs_to_Wcs(#TAG) );
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::Specimen_Logger{
@@ -191,9 +191,9 @@ namespace h2u{
 	static auto Are_All_Equivalent_to(RG const &rg, T const &t, EQ &&eq)->bool{
 		using _T = decltype( *std::begin(rg) );
 
-		return 
+		return
 			Are_All_True(
-				rg, [t, eq](_T const &_t)->bool{ return eq(_t, t); } 
+				rg, [t, eq](_T const &_t)->bool{ return eq(_t, t); }
 			)
 		;
 	}
@@ -213,7 +213,7 @@ namespace h2u{
 	static auto Are_N_Equivalent_to(ITR const itr, size_t const n, T const &t, EQ &&eq)->bool{
 		using _T = decltype(*itr);
 
-		return 
+		return
 			Are_N_True(
 				itr, n, [t, eq](_T const &_t)->bool{ return eq(_t, t); }
 			)
@@ -237,22 +237,22 @@ namespace h2u{
 #define _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(MACRO)  __##MACRO##__
 
 #define H2U_ASSERT(...) \
-    [](bool const assertion_pass) noexcept(false)->void{ \
-        if(assertion_pass){ return; } \
-        \
-        auto const \
+	[](bool const assertion_pass) noexcept(false)->void{ \
+		if(assertion_pass){ return; } \
+		\
+		auto const \
 			file_path \
 			= h2u::_Mbs_to_Wcs(	\
 				_H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) \
 			) \
 		;  \
-        \
-        auto const \
+		\
+		auto const \
 			error_line \
 			= std::to_wstring( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(LINE) ) \
 		; \
-        \
-        auto const \
+		\
+		auto const \
 			log_msg \
 			= std::wstring{L"[Failure case] \n"} \
 			+ L"  File : " + file_path + L'\n' \
@@ -260,11 +260,11 @@ namespace h2u{
 			+ L"  " + h2u::_Mbs_to_Wcs(#__VA_ARGS__) \
 			+ L"\n\n" \
 		; \
-        \
-        std::wcout << log_msg; \
-        \
-        throw h2u::Assertion_Failure{};  \
-    }\
+		\
+		std::wcout << log_msg; \
+		\
+		throw h2u::Assertion_Failure{};  \
+	}\
 	( static_cast<bool>(__VA_ARGS__) )
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
@@ -493,43 +493,43 @@ private:
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #define H2U_HOW2USE_TESTS(PREFIX, TITLE, SUFFIX)   \
-    struct __##TITLE##_Helper{ \
-        static std::initializer_list<void(*)()> test_list;   \
-    };  \
-    \
-    void PREFIX##TITLE##SUFFIX::test(){ \
-        h2u::_MD_Stream_Guard guard( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) );  \
-        \
-        guard.is_successful = true;    \
-        \
-        auto const title_wstr = h2u::_Mbs_to_Wcs(#TITLE); \
-        \
-        std::wcout << title_wstr << L" test starts.\n";    \
-        \
-        for(auto _test : __##TITLE##_Helper::test_list){ \
-            try{ \
+	struct __##TITLE##_Helper{ \
+		static std::initializer_list<void(*)()> test_list;   \
+	};  \
+	\
+	void PREFIX##TITLE##SUFFIX::test(){ \
+		h2u::_MD_Stream_Guard guard( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) );  \
+		\
+		guard.is_successful = true;    \
+		\
+		auto const title_wstr = h2u::_Mbs_to_Wcs(#TITLE); \
+		\
+		std::wcout << title_wstr << L" test starts.\n";    \
+		\
+		for(auto _test : __##TITLE##_Helper::test_list){ \
+			try{ \
 				_test(); \
 			} catch(h2u::Assertion_Failure const){ \
 				guard.is_successful = false; \
 			} \
 		} \
-        \
-        std::wcout << title_wstr << L" test ends.\n"; \
-        \
-        if(guard.is_successful){ \
-            std::wcout << L"All cases pass! \n"; \
+		\
+		std::wcout << title_wstr << L" test ends.\n"; \
+		\
+		if(guard.is_successful){ \
+			std::wcout << L"All cases pass! \n"; \
 		} \
-        \
-        std::wcout << L"//--------//--------//--------//--------//--------\n"; \
-    } \
-    \
-    std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
+		\
+		std::wcout << L"//--------//--------//--------//--------//--------\n"; \
+	} \
+	\
+	std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
 
 #define H2U_HOW2USE_CLASS(PREFIX, TITLE, SUFFIX)  \
-    struct PREFIX##TITLE##SUFFIX{ \
-        PREFIX##TITLE##SUFFIX() = delete;   \
-        \
-        static void test(); \
-    }
+	struct PREFIX##TITLE##SUFFIX{ \
+		PREFIX##TITLE##SUFFIX() = delete;   \
+		\
+		static void test(); \
+	}
 
 #endif // end of #ifndef _H2U_HOW2USE_
