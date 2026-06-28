@@ -87,7 +87,7 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 
 	{
 	BEGIN_CODE_BLOCK(are_all_true_ex)
-		std::initializer_list<int> range{2, 4, 6, 8, 10, 12};
+		std::initializer_list<int> range{ 2, 4, 6, 8, 10, 12 };
 
 		auto are_even_f = [](int n)->bool{ return n % 2 == 0; };
 		auto are_less_than_10_f = [](int n)->bool{ return n < 10; };
@@ -112,14 +112,14 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 
 BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 	{
-		std::initializer_list<int> range{7, 7, 7, 7};
+		std::initializer_list<int> range{ 7, 7, 7, 7 };
 
 		h2u::Are_All_Equivalent_to(range, 7);
 	}
 	{
 		std::initializer_list<int>
-			range0{7, 7, 7, -7, -7},
-			range1{3, 5, 7, 7, 7, -7, -7, -5, -3}
+			range0{ 7, 7, 7, -7, -7 },
+			range1{ 3, 5, 7, 7, 7, -7, -7, -5, -3 }
 		;
 
 		auto
@@ -154,9 +154,9 @@ END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 	{
 	BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
 		std::initializer_list<int>
-			range0{2, 4, 6, 8},
-			range1{2, 4, 6, 8},
-			range2{2, -4, 6, -8}
+			range0{ 2, 4, 6, 8 },
+			range1{ 2, 4, 6, 8 },
+			range2{ 2, -4, 6, -8 }
 		;
 
 		auto
