@@ -3,89 +3,75 @@
 */
 //========//========//========//========//=======#//========//========//========//========//=======#
 
-
 #include "WorldTest.hpp"
 #include <iostream>
 
-
-static void test() noexcept(false);
-
+static void Test() noexcept(false);
 
 template<class = void>
-static void log_message() noexcept{}
+static void Log_message() noexcept{}
 
-template<class A, class...ARGS>
-static void log_message(A&& a, ARGS&&...args) noexcept
-{
-    std::wcout << static_cast<A&&>(a);
-    
-	log_message( static_cast<ARGS&&>(args)... );
+template<class A, class ...ARGS>
+static void Log_message(A &&a, ARGS &&...args) noexcept{
+	std::wcout << static_cast<A &&>(a);
+
+	Log_message( static_cast<ARGS &&>(args)... );
 }
 
-
-static void system_pause() noexcept
-{
-    std::wcout << L"Press Enter key to continue. . .";
-    std::cin.get();   
+static void System_pause() noexcept{
+	std::wcout << L"Press Enter key to continue. . .";
+	std::cin.get();
 }
 
+auto wt::Tests(wchar_t const * const module_title) noexcept->bool{
+	::Log_message(
+		L"//========//========//========//========//=======#\n",
+		module_title, L" test Start\n"
+	);
 
-bool wt::Tests(wchar_t const* const module_title) noexcept
-{
-    ::log_message
-    (   L"//========//========//========//========//=======#\n"
-    ,   module_title, L" test Start\n"
-    );
+	try{
+		::Test();
 
-    try
-    {
-        ::test();
+		::Log_message(
+			module_title, L" test Complete\n",
+			L"//========//========//========//========//=======#\n"
+		);
 
-        ::log_message
-        (   module_title, L" test Complete\n"
-        ,   L"//========//========//========//========//=======#\n"
-        );
+		::System_pause();
 
-        ::system_pause();
-        
-        return true;
-    }
-    catch(...)
-    {
-        std::wcout << L"Error occurs!\n";
-    }
+		return true;
+	} catch(...){
+		std::wcout << L"Error occurs!\n";
+	}
 
-    ::log_message
-    (   module_title, L" test Failed"
-    ,   L"//========//========//========//========//=======#\n"
-    );
+	::Log_message(
+		module_title, L" test Failed",
+		L"//========//========//========//========//=======#\n"
+	);
 
-    ::system_pause();
+	::System_pause();
 
-    return false;
+	return false;
 }
-//========//========//========//========//=======#//========//========//========//========//=======#
-
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #include "Guide_How2use.hpp"
 
-
-void test() noexcept(false)
-{
-    h2u::Guide_How2use::test();
+void Test() noexcept(false){
+	h2u::Guide_How2use::test();
 }
 
-
-int main(int const, char const* const[])
-{
-    wchar_t const* const os   
+auto main(int const, char const * const [])->int{
+	wchar_t const * const
+		os
 #if defined(_WINDOWS_SOLUTION_)
-    =   L"Windows";
+		= L"Windows"
 #elif defined(_POSIX_SOLUTION_)
-    =   L"POSIX";
+		= L"POSIX"
 #else
-    =   L"Others";
+		= L"Others"
 #endif
+	;
 
-    return wt::Tests(os),  (int)0;
+	return wt::Tests(os), 0;
 }
