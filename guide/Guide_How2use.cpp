@@ -473,9 +473,9 @@ BEGIN_CODE_BLOCK(pseudo_code_ex)
 	h2u::mdo
 	<< LR"(
 		Selection_Sort(A[], n)
-		    for last <- downto 2
-		        Find the greatest element A[k] among A[1...last]
-		        Swap A[k] and A[last]
+			for last <- downto 2
+				Find the greatest element A[k] among A[1...last]
+				Swap A[k] and A[last]
 	)"_code;
 END_CODE_BLOCK(pseudo_code_ex)
 
