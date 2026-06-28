@@ -6,50 +6,50 @@
 #include "WorldTest.hpp"
 #include <iostream>
 
-static void test() noexcept(false);
+static void Test() noexcept(false);
 
 template<class = void>
-static void log_message() noexcept{}
+static void Log_message() noexcept{}
 
 template<class A, class ...ARGS>
-static void log_message(A &&a, ARGS &&...args) noexcept{
+static void Log_message(A &&a, ARGS &&...args) noexcept{
 	std::wcout << static_cast<A &&>(a);
 
-	log_message( static_cast<ARGS &&>(args)... );
+	Log_message( static_cast<ARGS &&>(args)... );
 }
 
-static void system_pause() noexcept{
+static void System_pause() noexcept{
 	std::wcout << L"Press Enter key to continue. . .";
 	std::cin.get();
 }
 
 auto wt::Tests(wchar_t const * const module_title) noexcept->bool{
-	::log_message(
+	::Log_message(
 		L"//========//========//========//========//=======#\n",
 		module_title, L" test Start\n"
 	);
 
 	try{
-		::test();
+		::Test();
 
-		::log_message(
+		::Log_message(
 			module_title, L" test Complete\n",
 			L"//========//========//========//========//=======#\n"
 		);
 
-		::system_pause();
+		::System_pause();
 
 		return true;
 	} catch(...){
 		std::wcout << L"Error occurs!\n";
 	}
 
-	::log_message(
+	::Log_message(
 		module_title, L" test Failed",
 		L"//========//========//========//========//=======#\n"
 	);
 
-	::system_pause();
+	::System_pause();
 
 	return false;
 }
@@ -57,7 +57,7 @@ auto wt::Tests(wchar_t const * const module_title) noexcept->bool{
 
 #include "Guide_How2use.hpp"
 
-void test() noexcept(false){
+void Test() noexcept(false){
 	h2u::Guide_How2use::test();
 }
 

@@ -482,7 +482,7 @@ END_CODE_BLOCK(pseudo_code_ex)
 	h2u::mdo << h2u::empty_line;
 }
 
-static void outro(){
+static void Outro(){
 	h2u::mdo
 	<< L"----" << h2u::newl
 	<< h2u::HTML_tag(L"Thank you for watching", L"strong center")
@@ -500,5 +500,5 @@ H2U_HOW2USE_TESTS(h2u::Guide_, How2use, /**/){
 	::External_Resources,
 	::Guards,
 	::Literal_Suffixes,
-	::outro
+	::Outro
 };
