@@ -4,6 +4,7 @@
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 #include "How2use.hpp"
+#include <cwchar>
 #include <fstream>
 #include <queue>
 #include <stdexcept>
@@ -22,15 +23,41 @@ auto operator ""_code(wchar_t const *str, size_t)->h2u::_code_description{
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 auto h2u::_Mbs_to_Wcs(std::string const &mbs)->std::wstring{
-	std::wstring res(mbs.size(), L'\0');
-	mbstowcs(&res.front(), mbs.c_str(), res.size());
+	std::mbstate_t state = {};
+	char const *src = mbs.c_str();
+	size_t const len = std::mbsrtowcs(nullptr, &src, 0, &state);
+
+	if( len == static_cast<size_t>(-1) ){
+		throw std::runtime_error("invalid multibyte sequence in _Mbs_to_Wcs.");
+	}
+
+	std::wstring res(len, L'\0');
+
+	if(len != 0){
+		src = mbs.c_str();
+		state = std::mbstate_t{};
+		std::mbsrtowcs(&res.front(), &src, len, &state);
+	}
 
 	return res;
 }
 
 auto h2u::_Wcs_to_Mbs(std::wstring const &wcs)->std::string{
-	std::string res(wcs.size(), '\0');
-	wcstombs(&res.front(), wcs.c_str(), res.size());
+	std::mbstate_t state = {};
+	wchar_t const *src = wcs.c_str();
+	size_t const len = std::wcsrtombs(nullptr, &src, 0, &state);
+
+	if( len == static_cast<size_t>(-1) ){
+		throw std::runtime_error("invalid wide character in _Wcs_to_Mbs.");
+	}
+
+	std::string res(len, '\0');
+
+	if(len != 0){
+		src = wcs.c_str();
+		state = std::mbstate_t{};
+		std::wcsrtombs(&res.front(), &src, len, &state);
+	}
 
 	return res;
 }
@@ -226,7 +253,7 @@ auto h2u::_tabless_description::_tabless_string(wstring &&str)->wstring{
 		}
 	}
 
-	for( ; _is_empty_line(qs.front()); qs.pop() ){}
+	for( ; !qs.empty() && _is_empty_line(qs.front()); qs.pop() ){}
 
 	wstring res;
 	res.reserve(total_str_len + 2 * qs.size());
@@ -502,7 +529,7 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 		}
 	}
 
-	while( _is_empty_line(qs.front()) ){
+	while( !qs.empty() && _is_empty_line(qs.front()) ){
 		qs.pop();
 	}
 
