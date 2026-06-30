@@ -61,7 +61,7 @@ void Test() noexcept(false){
 	h2u::Guide_How2use::test();
 }
 
-auto main(int const, char const * const [])->int{
+auto main(int const, char const * const[])->int{
 	wchar_t const * const
 		os
 #if defined(_WINDOWS_SOLUTION_)
