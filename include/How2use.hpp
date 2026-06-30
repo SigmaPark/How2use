@@ -524,6 +524,7 @@ private:
 	} \
 	\
 	std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #define H2U_HOW2USE_CLASS(PREFIX, TITLE, SUFFIX)  \
 	struct PREFIX##TITLE##SUFFIX{ \
@@ -531,5 +532,6 @@ private:
 		\
 		static void test(); \
 	}
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 #endif // end of #ifndef _H2U_HOW2USE_

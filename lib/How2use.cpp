@@ -175,7 +175,7 @@ h2u::md_guard::md_guard(wstring begin, wstring end) : _end(end){ mdo << begin; }
 h2u::md_guard::~md_guard(){ mdo << _end; }
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
-h2u::md_block_guard::md_block_guard(wstring s) : md_guard(wstring(L"```") + s + L"\n", L"```\n"){}
+h2u::md_block_guard::md_block_guard(wstring s) : md_guard( wstring(L"```") + s + L"\n", L"```\n" ){}
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 h2u::html_block_guard::html_block_guard(wstring const &tags){
@@ -468,7 +468,7 @@ auto h2u::Load_description_file(wstring const &filename) noexcept(false)->wstrin
 	size_t nof_char = 0;
 	std::wifstream file( _Wcs_to_Mbs(filepath).c_str() );
 
-	for( wstring buf; ::Getline(file, buf); nof_char += buf.size() + 4){
+	for( wstring buf; ::Getline(file, buf); nof_char += buf.size() + 4 ){
 		qs.push(buf + L"  \n");
 	}
 
