@@ -116,6 +116,7 @@ BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 
 		h2u::Are_All_Equivalent_to(range, 7);
 	}
+
 	{
 		std::initializer_list<int>
 			range0{ 7, 7, 7, -7, -7 },
@@ -203,12 +204,14 @@ static void Specimen_and_State(){
 		H2U_ASSERT(s1.state() == h2u::Specimen::State::DEFAULT_CONSTRUCTION);
 
 		h2u::Specimen s2(42);
+
 		H2U_ASSERT(
 			s2.state() == h2u::Specimen::State::MANUAL_CONSTRUCTION
 			&& s2.value() == 42
 		);
 
 		h2u::Specimen s3 = s2;
+		
 		H2U_ASSERT(
 			s3.state() == h2u::Specimen::State::COPY_CONSTRUCTION
 			&& s3.value() == 42
