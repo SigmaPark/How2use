@@ -321,19 +321,21 @@ auto operator ""_mdo(wchar_t const *str, size_t)->h2u::_tabless_description;
 class h2u::_tabless_description{
 public:
 	_tabless_description(std::wstring &&s);
+
 private:
 	template<class T, class _T, int>
 	friend struct h2u::_MD_Stream_Helper;
 
 	std::wstring _str;
 
-	static auto _tabless_string(std::wstring &&s)->std::wstring;
+	static auto _Tabless_string(std::wstring &&s)->std::wstring;
 };
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 class h2u::_code_description{
 public:
 	_code_description(std::wstring &&s);
+
 private:
 	template<class T, class _T, int>
 	friend struct h2u::_MD_Stream_Helper;
@@ -350,7 +352,7 @@ public:
 	static auto instance()->_MD_Stream &;
 
 	void open(std::wstring const working_filepath);
-	bool is_open() const;
+	auto is_open() const->bool;
 
 	auto ever_used() const->bool;
 	auto working_filepath() const->std::wstring const &;
@@ -362,6 +364,7 @@ public:
 
 	template<class T>
 	auto operator<<(T &&t)->_MD_Stream &;
+
 private:
 	_MD_Stream();
 	~_MD_Stream();
@@ -377,7 +380,7 @@ private:
 
 template<class T>
 auto h2u::_MD_Stream::operator<<(T &&t)->_MD_Stream &{
-	_push(  _MD_Stream_Helper<T>::calc( std::forward<T>(t) )  );
+	_push(  _MD_Stream_Helper<T>::Calc( std::forward<T>(t) )  );
 
 	return *this;
 }
@@ -393,7 +396,7 @@ struct h2u::_MD_Stream_Helper
 	_No_instance
 {
 	template<class Q>
-	static auto calc(Q &&q)->std::wstring{ return std::forward<Q>(q); }
+	static auto Calc(Q &&q)->std::wstring{ return std::forward<Q>(q); }
 };
 
 template<class T, class _T>
@@ -402,7 +405,7 @@ struct h2u::_MD_Stream_Helper<T, _T, 1>
 	_No_instance
 {
 	template<class Q>
-	static auto calc(Q &&q)->decltype(q._str){ return q._str; }
+	static auto Calc(Q &&q)->decltype(q._str){ return q._str; }
 };
 
 template<class T, class _T>
@@ -410,7 +413,7 @@ struct h2u::_MD_Stream_Helper<T, _T, 2>
 :
 	_No_instance
 {
-	static auto calc(_T const b)->std::wstring{ return b ? L"true" : L"false"; }
+	static auto Calc(_T const b)->std::wstring{ return b ? L"true" : L"false"; }
 };
 
 template<class T, class _T>
@@ -419,7 +422,7 @@ struct h2u::_MD_Stream_Helper<T, _T, 3>
 	_No_instance
 {
 	template<class Q>
-	static auto calc(Q const s)->std::wstring{ return std::to_wstring(s); }
+	static auto Calc(Q const s)->std::wstring{ return std::to_wstring(s); }
 };
 
 template<class T, class _T>
@@ -428,7 +431,7 @@ struct h2u::_MD_Stream_Helper<T, _T, 4>
 	_No_instance
 {
 	template<class P>
-	static auto calc(P const p)->std::wstring{
+	static auto Calc(P const p)->std::wstring{
 		return std::to_wstring( reinterpret_cast<long long>(p) );
 	}
 };
@@ -468,6 +471,7 @@ public:
 	md_guard(std::wstring begin);
 	md_guard(std::wstring begin, std::wstring end);
 	~md_guard();
+
 private:
 	std::wstring _end;
 };
@@ -485,10 +489,11 @@ class h2u::html_block_guard{
 public:
 	html_block_guard(std::wstring const &tags);
 	~html_block_guard();
+
 private:
 	std::wstring _end = {};
 
-	static auto _bracket(std::wstring const &s)->std::wstring;
+	static auto _Bracket(std::wstring const &s)->std::wstring;
 };
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 

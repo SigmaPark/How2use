@@ -107,7 +107,7 @@ void h2u::_MD_Stream::open(dir_t const working_filepath){
 	}(working_filepath);
 }
 
-bool h2u::_MD_Stream::is_open() const{ return _md_filepath != dir_t(); }
+auto h2u::_MD_Stream::is_open() const->bool{ return _md_filepath != dir_t(); }
 
 void h2u::_MD_Stream::close(){
 	_working_filepath = _md_filepath = _md_materials_dir = {};
@@ -163,7 +163,8 @@ h2u::_MD_Stream_Guard::_MD_Stream_Guard(std::string working_filepath)
 h2u::_MD_Stream_Guard::~_MD_Stream_Guard(){
 	if(is_successful && mdo->ever_used()){
 		mdo->print_and_close();
-	} else{
+	}
+	else{
 		std::remove( _Wcs_to_Mbs(mdo->md_filepath()).c_str() );
 		mdo->close();
 	}
@@ -185,7 +186,8 @@ h2u::html_block_guard::html_block_guard(wstring const &tags){
 		if(itr2 == tags.cend()){
 			q.emplace(itr1, itr2);
 			break;
-		} else if(*itr2 == L' '){
+		}
+		else if(*itr2 == L' '){
 			q.emplace(itr1, itr2);
 			itr1 = itr2 + 1;
 		}
@@ -194,14 +196,14 @@ h2u::html_block_guard::html_block_guard(wstring const &tags){
 	for( _end.reserve(tags.size() + 2 * q.size() + 1); !q.empty(); q.pop() ){
 		auto const &tag = q.front();
 
-		mdo << _bracket(tag);
-		_end.append( _bracket(wstring{ L'/' } + tag) );
+		mdo << _Bracket(tag);
+		_end.append( _Bracket(wstring{ L'/' } + tag) );
 	}
 }
 
 h2u::html_block_guard::~html_block_guard(){ mdo << _end; }
 
-auto h2u::html_block_guard::_bracket(wstring const &s)->wstring{
+auto h2u::html_block_guard::_Bracket(wstring const &s)->wstring{
 	return wstring{ L'<' } + s + L'>';
 }
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
@@ -221,16 +223,16 @@ static auto _file_exists(dir_t const &filepath)->bool{
 
 h2u::_tabless_description::_tabless_description(wstring &&s)
 :
-	_str(  _tabless_string( std::move(s) )  )
+	_str(  _Tabless_string( std::move(s) )  )
 {}
 
-auto h2u::_tabless_description::_tabless_string(wstring &&str)->wstring{
+auto h2u::_tabless_description::_Tabless_string(wstring &&str)->wstring{
 	std::queue<wstring> qs;
 	size_t total_str_len = 0;
 
 	using str_itr_t = wstring::const_iterator;
 
-	auto
+	auto  
 		enqueue_f
 		= [&qs, &total_str_len](str_itr_t itr1, str_itr_t itr2){
 			if( !_is_empty_line({ itr1, itr2 }) ){
@@ -247,7 +249,8 @@ auto h2u::_tabless_description::_tabless_string(wstring &&str)->wstring{
 		if(itr2 == str.cend()){
 			enqueue_f(itr1, itr2);
 			break;
-		} else if(*itr2 == L'\n'){
+		}
+		else if(*itr2 == L'\n'){
 			enqueue_f(itr1, itr2);
 			itr1 = itr2 + 1;
 		}
@@ -276,16 +279,17 @@ auto h2u::HTML_tag(wstring const &contents, wstring const &tag)->wstring{
 		if(itr2 == tag.cend()){
 			tags.emplace(itr1, itr2);
 			break;
-		} else if(*itr2 == L' '){
+		}
+		else if(*itr2 == L' '){
 			tags.emplace(itr1, itr2);
 			itr1 = itr2 + 1;
 		}
 	}
 
-	auto
+	auto  
 		tag_f
 		= [](wstring const &s, wstring const &t){
-			wstring const
+			wstring const  
 				begin_str = wstring(L"<") + t + L">",
 				end_str = wstring(L"</") + t + L">"
 			;
@@ -309,7 +313,7 @@ auto h2u::Load_image(wstring const &image_name, size_t const image_width)->wstri
 		throw std::runtime_error("Cannot find the image file in ./md_materials directory.");
 	}
 
-	auto const
+	auto const  
 		size_str
 		= image_width == 0
 		? wstring(L"")
@@ -350,7 +354,7 @@ static auto Getline(std::wifstream &wis, std::wstring &wbuf)->std::wifstream &{
 	std::wistream::sentry wse(wis, true);
 	std::wstreambuf &wsbuf = *wis.rdbuf();
 
-	auto constexpr
+	auto constexpr  
 		cr = static_cast<wchar_t>(L'\r'),
 		Lf = static_cast<wchar_t>(L'\n'),
 		eof = static_cast<wchar_t>(std::wstreambuf::traits_type::eof())
@@ -362,18 +366,21 @@ static auto Getline(std::wifstream &wis, std::wstring &wbuf)->std::wifstream &{
 		switch(c){
 		case Lf:
 			return wis;
+
 		case cr:
 			if( static_cast<wchar_t>(wsbuf.sgetc()) == Lf ){
 				wsbuf.sbumpc();
 			}
 
 			return wis;
+
 		case eof:
 			if(wbuf.empty()){
 				wis.setstate(std::ios::eofbit);
 			}
 
 			return wis;
+
 		default:
 			wbuf += c;
 		}
@@ -387,13 +394,13 @@ auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)->wstring
 
 	std::wifstream file( _Wcs_to_Mbs(mdo->working_filepath()).c_str() );
 
-	wstring const
+	wstring const  
 		cb_begin = wstring(L"BEGIN_CODE_BLOCK(") + code_block_tag + L")",
 		cb_end = wstring(L"END_CODE_BLOCK(") + code_block_tag + L")",
 		cb_end2 = wstring(L"END_CODE_BLOCK_AND_LOAD(") + code_block_tag + L")"
 	;
 
-	auto
+	auto  
 		trimmed_str_f
 		= [](wstring const &s)->wstring{
 			if( s.empty() || _is_empty_line(s) ){
@@ -415,7 +422,7 @@ auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)->wstring
 		}
 	;
 
-	auto
+	auto  
 		are_same_str_f
 		= [](wstring const &s1, wstring const &s2, size_t const size){
 			bool res = s1.size() >= size && s2.size() >= size;
@@ -484,7 +491,7 @@ auto h2u::Load_description_file(wstring const &filename) noexcept(false)->wstrin
 }
 
 auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
-	auto
+	auto  
 		tab_count_f
 		= [](wstring const &line)->size_t{
 			size_t res = 0;
@@ -504,7 +511,7 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 
 	using str_itr_t = wstring::const_iterator;
 
-	auto
+	auto  
 		enqueue_f
 		= [&qs, &total_str_len, &min_nof_tab, tab_count_f](str_itr_t itr1, str_itr_t itr2){
 			auto min_f = [](size_t _1, size_t _2) noexcept->size_t{ return _1 < _2 ? _1 : _2; };
@@ -523,7 +530,8 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 		if(itr2 == str.cend()){
 			enqueue_f(itr1, itr2);
 			break;
-		} else if(*itr2 == L'\n'){
+		}
+		else if(*itr2 == L'\n'){
 			enqueue_f(itr1, itr2);
 			itr1 = itr2 + 1;
 		}
@@ -543,7 +551,8 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 
 		if( !_is_empty_line(s) ){
 			res.append(s.cbegin() + min_nof_tab, s.cend());
-		} else{
+		}
+		else{
 			res.append(s);
 		}
 
@@ -553,7 +562,8 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 
 	do{
 		res.pop_back();
-	} while(res.back() != L'\n');
+	}
+	while(res.back() != L'\n');
 
 	res.append(L"```\n");
 
