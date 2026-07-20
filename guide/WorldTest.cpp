@@ -40,7 +40,8 @@ auto wt::Tests(wchar_t const * const module_title) noexcept->bool{
 		::System_pause();
 
 		return true;
-	} catch(...){
+	}
+	catch(...){
 		std::wcout << L"Error occurs!\n";
 	}
 
@@ -62,7 +63,7 @@ void Test() noexcept(false){
 }
 
 auto main(int const, char const * const[])->int{
-	wchar_t const * const
+	wchar_t const * const  
 		os
 #if defined(_WINDOWS_SOLUTION_)
 		= L"Windows"

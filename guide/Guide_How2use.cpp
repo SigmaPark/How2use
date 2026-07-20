@@ -23,9 +23,9 @@ static void Math_Expression(){
 	<< L"Markdown supports writing mathematical expressions using LaTeX syntex." << h2u::newl
 	<< h2u::Load_code_block(L"math_expression_ex") << h2u::newl;
 
-BEGIN_CODE_BLOCK(math_expression_ex)
+	BEGIN_CODE_BLOCK(math_expression_ex)
 	h2u::mdo << LR"($$ \sum_{n = 1}^{\infty}{n^{-2}} = \frac{\pi^{2}}{6} $$)";
-END_CODE_BLOCK(math_expression_ex)
+	END_CODE_BLOCK(math_expression_ex)
 
 	h2u::mdo << h2u::empty_line;
 }
@@ -36,9 +36,9 @@ static void Code_Block(){
 	<< L"Macro \"BEGIN_CODE_BLOCK\" and \"END_CODE_BLOCK\" captures codes." << h2u::newl
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(code_block_example_show)
+	BEGIN_CODE_BLOCK(code_block_example_show)
 
-BEGIN_CODE_BLOCK(code_block_ex)
+	BEGIN_CODE_BLOCK(code_block_ex)
 	int sum = 0;
 
 	for(int i = 1; i <= 10; ++i){
@@ -46,9 +46,9 @@ BEGIN_CODE_BLOCK(code_block_ex)
 	}
 
 	H2U_ASSERT(sum == 55);
-END_CODE_BLOCK(code_block_ex)
+	END_CODE_BLOCK(code_block_ex)
 
-END_CODE_BLOCK(code_block_example_show)
+	END_CODE_BLOCK(code_block_example_show)
 
 	h2u::mdo << h2u::Load_code_block(L"code_block_example_show") << h2u::newl;
 	h2u::mdo << h2u::empty_line;
@@ -70,11 +70,11 @@ static void Assertions(){
 	<< h2u::Title(L"H2U_ASSERT", 2)
 	<< L"\"H2U_ASSERT\" checks an boolean expression is true." << h2u::newl;
 
-BEGIN_CODE_BLOCK(is_true_ex)
+	BEGIN_CODE_BLOCK(is_true_ex)
 	int result = 1 + 1;
 
 	H2U_ASSERT(result == 2);
-END_CODE_BLOCK_AND_LOAD(is_true_ex)
+	END_CODE_BLOCK_AND_LOAD(is_true_ex)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -86,7 +86,7 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 	<< h2u::newl;
 
 	{
-	BEGIN_CODE_BLOCK(are_all_true_ex)
+		BEGIN_CODE_BLOCK(are_all_true_ex)
 		std::initializer_list<int> range{ 2, 4, 6, 8, 10, 12 };
 
 		auto are_even_f = [](int n)->bool{ return n % 2 == 0; };
@@ -96,7 +96,8 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 			h2u::Are_All_True(range, are_even_f)
 			&& h2u::Are_N_True(range.begin(), 4, are_less_than_10_f)
 		);
-	END_CODE_BLOCK_AND_LOAD(are_all_true_ex)
+
+		END_CODE_BLOCK_AND_LOAD(are_all_true_ex)
 	}
 
 	h2u::mdo << h2u::empty_line;
@@ -110,7 +111,7 @@ END_CODE_BLOCK_AND_LOAD(is_true_ex)
 	<< L"from an iterator . "
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(are_all_equivalent_ex)
+	BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 	{
 		std::initializer_list<int> range{ 7, 7, 7, 7 };
 
@@ -123,7 +124,7 @@ BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 			range1{ 3, 5, 7, 7, 7, -7, -7, -5, -3 }
 		;
 
-		auto
+		auto  
 			abs_value_are_same_f
 			= [](int n0, int n1)->bool{
 				int abs_n0 = n0 >= 0 ? n0 : -n0;
@@ -140,7 +141,8 @@ BEGIN_CODE_BLOCK(are_all_equivalent_ex)
 			&& h2u::Are_N_Equivalent_to(range1.begin() + 2, 5, 7, abs_value_are_same_f)
 		);
 	}
-END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
+
+	END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -153,14 +155,14 @@ END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 	<< h2u::newl;
 
 	{
-	BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
+		BEGIN_CODE_BLOCK(are_equivalent_ranges_ex)
 		std::initializer_list<int>
 			range0{ 2, 4, 6, 8 },
 			range1{ 2, 4, 6, 8 },
 			range2{ 2, -4, 6, -8 }
 		;
 
-		auto
+		auto  
 			abs_value_are_same_f
 			= [](int n0, int n1)->bool{
 				int abs_n0 = n0 >= 0 ? n0 : -n0;
@@ -174,7 +176,8 @@ END_CODE_BLOCK_AND_LOAD(are_all_equivalent_ex)
 			h2u::Are_Equivalent_Ranges(range0, range1)
 			&& h2u::Are_Equivalent_Ranges(range1, range2, abs_value_are_same_f)
 		);
-	END_CODE_BLOCK_AND_LOAD(are_equivalent_ranges_ex)
+
+		END_CODE_BLOCK_AND_LOAD(are_equivalent_ranges_ex)
 	}
 
 	h2u::mdo << h2u::empty_line;
@@ -199,7 +202,7 @@ static void Specimen_and_State(){
 	<< h2u::newl;
 
 	{
-	BEGIN_CODE_BLOCK(specimen_state_basic_ex)
+		BEGIN_CODE_BLOCK(specimen_state_basic_ex)
 		h2u::Specimen s1;
 		H2U_ASSERT(s1.state() == h2u::Specimen::State::DEFAULT_CONSTRUCTION);
 
@@ -216,7 +219,8 @@ static void Specimen_and_State(){
 			s3.state() == h2u::Specimen::State::COPY_CONSTRUCTION
 			&& s3.value() == 42
 		);
-	END_CODE_BLOCK_AND_LOAD(specimen_state_basic_ex)
+
+		END_CODE_BLOCK_AND_LOAD(specimen_state_basic_ex)
 	}
 
 	h2u::mdo << h2u::empty_line;
@@ -228,7 +232,7 @@ static void Specimen_and_State(){
 	<< h2u::newl;
 
 	{
-	BEGIN_CODE_BLOCK(specimen_move_ex)
+		BEGIN_CODE_BLOCK(specimen_move_ex)
 		h2u::Specimen s1(100);
 
 		h2u::Specimen s2 = std::move(s1);
@@ -247,7 +251,8 @@ static void Specimen_and_State(){
 			&& s3.value() == 100
 			&& s2.state() == h2u::Specimen::State::MOVE_AWAY
 		);
-	END_CODE_BLOCK_AND_LOAD(specimen_move_ex)
+
+		END_CODE_BLOCK_AND_LOAD(specimen_move_ex)
 	}
 
 	h2u::mdo << h2u::empty_line;
@@ -273,29 +278,24 @@ static void Specimen_Log_Tracking(){
 	<< L"This example uses a deque to record all lifecycle events."
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(recording_logger_impl)
+	BEGIN_CODE_BLOCK(recording_logger_impl)
 	class Recording_Specimen_Logger
-	:
-		public h2u::Specimen_Logger
-	{
+	: public h2u::Specimen_Logger{
 	private:
 		std::deque<std::wstring> _record;
+
 	public:
 		std::deque<std::wstring> const &record;
 
-		Recording_Specimen_Logger() noexcept
-		:
-			h2u::Specimen_Logger(),
-			_record(),
-			record(_record)
-		{}
+		Recording_Specimen_Logger() noexcept : h2u::Specimen_Logger(), _record(), record(_record){}
 
 		void log(std::wstring const &msg) override{ _record.emplace_back(msg); }
 		void reset() noexcept{ _record.clear(); }
 
 		~Recording_Specimen_Logger() override = default;
 	};
-END_CODE_BLOCK_AND_LOAD(recording_logger_impl)
+
+	END_CODE_BLOCK_AND_LOAD(recording_logger_impl)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -306,7 +306,7 @@ END_CODE_BLOCK_AND_LOAD(recording_logger_impl)
 	<< L"a scope, then examine the recorded events."
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(specimen_template_test)
+	BEGIN_CODE_BLOCK(specimen_template_test)
 	Recording_Specimen_Logger spec_log;
 
 	{
@@ -336,7 +336,8 @@ BEGIN_CODE_BLOCK(specimen_template_test)
 		std::find(spec_log.record.begin(), spec_log.record.end(), L"copy_construction")
 		== spec_log.record.end()
 	);
-END_CODE_BLOCK_AND_LOAD(specimen_template_test)
+
+	END_CODE_BLOCK_AND_LOAD(specimen_template_test)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -366,9 +367,9 @@ static void External_Resources(){
 	{
 		h2u::md_block_guard mbg;
 
-	BEGIN_CODE_BLOCK(descrip_file_ex)
+		BEGIN_CODE_BLOCK(descrip_file_ex)
 		h2u::mdo << h2u::Load_description_file(L"YOLO.txt");
-	END_CODE_BLOCK(descrip_file_ex)
+		END_CODE_BLOCK(descrip_file_ex)
 	}
 
 	h2u::mdo << h2u::empty_line;
@@ -379,13 +380,14 @@ static void External_Resources(){
 	<< h2u::Load_code_block(L"img_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(img_ex)
+	BEGIN_CODE_BLOCK(img_ex)
 	{
 		h2u::html_block_guard hbg(L"center");
 
 		h2u::mdo << h2u::Load_image(L"sample_image.jpg", 720);
 	}
-END_CODE_BLOCK(img_ex)
+
+	END_CODE_BLOCK(img_ex)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -402,7 +404,7 @@ static void Guards(){
 	<< h2u::Load_code_block(L"md_guard_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(md_guard_ex)
+	BEGIN_CODE_BLOCK(md_guard_ex)
 	{
 		h2u::md_block_guard mbg;
 
@@ -411,14 +413,15 @@ BEGIN_CODE_BLOCK(md_guard_ex)
 		<< L"all contents are in box tab."
 		<< h2u::newl;
 	}
-END_CODE_BLOCK(md_guard_ex)
+
+	END_CODE_BLOCK(md_guard_ex)
 
 	h2u::mdo
 	<< h2u::newl << h2u::Title(L"HTML Guard", 2)
 	<< h2u::Load_code_block(L"html_guard_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(html_guard_ex)
+	BEGIN_CODE_BLOCK(html_guard_ex)
 	{
 		h2u::html_block_guard hbg(L"center strong blockquote");
 
@@ -427,7 +430,8 @@ BEGIN_CODE_BLOCK(html_guard_ex)
 		<< L"all contents are aligned at center, emphasized and quoted in block."
 		<< h2u::newl;
 	}
-END_CODE_BLOCK(html_guard_ex)
+
+	END_CODE_BLOCK(html_guard_ex)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -436,9 +440,9 @@ END_CODE_BLOCK(html_guard_ex)
 	<< h2u::Load_code_block(L"html_tag_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(html_tag_ex)
+	BEGIN_CODE_BLOCK(html_tag_ex)
 	h2u::mdo << h2u::HTML_tag(L"HTML tags to a short messages.", L"center strong blockquote");
-END_CODE_BLOCK(html_tag_ex)
+	END_CODE_BLOCK(html_tag_ex)
 
 	h2u::mdo << h2u::empty_line;
 }
@@ -450,7 +454,7 @@ static void Literal_Suffixes(){
 	<< h2u::Load_code_block(L"mdo_suffix_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(mdo_suffix_ex)
+	BEGIN_CODE_BLOCK(mdo_suffix_ex)
 	h2u::mdo
 	<< LR"(
 		If you want to write something verbose,
@@ -460,7 +464,7 @@ BEGIN_CODE_BLOCK(mdo_suffix_ex)
 		describe what you want to explain freely.
 				All blank spaces and tabs on left will be removed.
 	)"_mdo;
-END_CODE_BLOCK(mdo_suffix_ex)
+	END_CODE_BLOCK(mdo_suffix_ex)
 
 	h2u::mdo << h2u::empty_line;
 
@@ -472,7 +476,7 @@ END_CODE_BLOCK(mdo_suffix_ex)
 	<< h2u::newl << h2u::Load_code_block(L"pseudo_code_ex")
 	<< h2u::newl;
 
-BEGIN_CODE_BLOCK(pseudo_code_ex)
+	BEGIN_CODE_BLOCK(pseudo_code_ex)
 	h2u::mdo
 	<< LR"(
 		Selection_Sort(A[], n)
@@ -480,7 +484,7 @@ BEGIN_CODE_BLOCK(pseudo_code_ex)
 				Find the greatest element A[k] among A[1...last]
 				Swap A[k] and A[last]
 	)"_code;
-END_CODE_BLOCK(pseudo_code_ex)
+	END_CODE_BLOCK(pseudo_code_ex)
 
 	h2u::mdo << h2u::empty_line;
 }
