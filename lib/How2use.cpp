@@ -145,9 +145,7 @@ void h2u::_MD_Stream::_push(wstring &&str){
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 h2u::_MD_Stream_Guard::_MD_Stream_Guard(dir_t working_filepath)
-:
-	is_successful(true)
-{
+: is_successful(true){
 	for(auto &c : working_filepath){
 		if(c == L'\\'){ c = L'/'; }
 	}
@@ -156,9 +154,7 @@ h2u::_MD_Stream_Guard::_MD_Stream_Guard(dir_t working_filepath)
 }
 
 h2u::_MD_Stream_Guard::_MD_Stream_Guard(std::string working_filepath)
-:
-	_MD_Stream_Guard( _Mbs_to_Wcs(working_filepath) )
-{}
+: _MD_Stream_Guard( _Mbs_to_Wcs(working_filepath) ){}
 
 h2u::_MD_Stream_Guard::~_MD_Stream_Guard(){
 	if(is_successful && mdo->ever_used()){
@@ -222,9 +218,7 @@ static auto _file_exists(dir_t const &filepath)->bool{
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
 h2u::_tabless_description::_tabless_description(wstring &&s)
-:
-	_str(  _Tabless_string( std::move(s) )  )
-{}
+: _str(  _Tabless_string( std::move(s) )  ){}
 
 auto h2u::_tabless_description::_Tabless_string(wstring &&str)->wstring{
 	std::queue<wstring> qs;

@@ -280,21 +280,14 @@ static void Specimen_Log_Tracking(){
 
 	BEGIN_CODE_BLOCK(recording_logger_impl)
 	class Recording_Specimen_Logger
-	:
-		public h2u::Specimen_Logger
-	{
+	: public h2u::Specimen_Logger{
 	private:
 		std::deque<std::wstring> _record;
 
 	public:
 		std::deque<std::wstring> const &record;
 
-		Recording_Specimen_Logger() noexcept
-		:
-			h2u::Specimen_Logger(),
-			_record(),
-			record(_record)
-		{}
+		Recording_Specimen_Logger() noexcept : h2u::Specimen_Logger(), _record(), record(_record){}
 
 		void log(std::wstring const &msg) override{ _record.emplace_back(msg); }
 		void reset() noexcept{ _record.clear(); }
