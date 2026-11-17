@@ -63,6 +63,122 @@ auto h2u::_Wcs_to_Mbs(std::wstring const &wcs)->std::string{
 }
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
+static char32_t constexpr Escape_base = 0xDC80;
+
+static auto _is_surrogate(char32_t const cp)->bool{ return cp >= 0xD800 && cp <= 0xDFFF; }
+
+static void _Push_code_point(wstring &wcs, char32_t const cp){
+	if( sizeof(wchar_t) == 2 && cp > 0xFFFF ){
+		wcs.push_back(   static_cast<wchar_t>(  0xD800 + ( (cp - 0x10000) >> 10 )  )   );
+		wcs.push_back(   static_cast<wchar_t>(  0xDC00 + ( (cp - 0x10000) & 0x3FF )  )   );
+	}
+	else{
+		wcs.push_back( static_cast<wchar_t>(cp) );
+	}
+}
+
+static void _Push_utf8(std::string &bytes, char32_t const cp){
+	auto const byte_f = [](char32_t const c)->char{ return static_cast<char>(c); };
+
+	if(cp < 0x80){
+		bytes.push_back( byte_f(cp) );
+	}
+	else if(cp < 0x800){
+		bytes.push_back( byte_f(0xC0 | cp >> 6) );
+		bytes.push_back(  byte_f( 0x80 | (cp & 0x3F) )  );
+	}
+	else if(cp < 0x10000){
+		bytes.push_back( byte_f(0xE0 | cp >> 12) );
+		bytes.push_back(   byte_f(  0x80 | ( (cp >> 6) & 0x3F )  )   );
+		bytes.push_back(  byte_f( 0x80 | (cp & 0x3F) )  );
+	}
+	else{
+		bytes.push_back( byte_f(0xF0 | cp >> 18) );
+		bytes.push_back(   byte_f(  0x80 | ( (cp >> 12) & 0x3F )  )   );
+		bytes.push_back(   byte_f(  0x80 | ( (cp >> 6) & 0x3F )  )   );
+		bytes.push_back(  byte_f( 0x80 | (cp & 0x3F) )  );
+	}
+}
+
+static auto _Utf8_to_Wcs(std::string const &bytes)->wstring{
+	wstring res;
+	res.reserve(bytes.size());
+
+	for(size_t i = 0; i < bytes.size();){
+		auto const lead = static_cast<unsigned char>(bytes[i]);
+
+		size_t const  
+			nof_trail
+			= lead < 0x80 ? 0
+			: lead >> 5 == 0x06 ? 1
+			: lead >> 4 == 0x0E ? 2
+			: lead >> 3 == 0x1E ? 3
+			: 4
+		;
+
+		char32_t const min_cp = nof_trail == 1 ? 0x80 : nof_trail == 2 ? 0x800 : 0x10000;
+		char32_t cp = static_cast<char32_t>( lead & (0x7F >> nof_trail) );
+		bool is_valid = nof_trail < 4 && i + nof_trail < bytes.size();
+
+		for(size_t k = 1; is_valid && k <= nof_trail; ++k){
+			auto const trail = static_cast<unsigned char>(bytes[i + k]);
+
+			is_valid = trail >> 6 == 0x02;
+			cp = cp << 6 | (trail & 0x3F);
+		}
+
+		is_valid
+		= is_valid && (nof_trail == 0 || cp >= min_cp) && cp <= 0x10FFFF && !_is_surrogate(cp);
+
+		if(is_valid){
+			_Push_code_point(res, cp);
+			i += nof_trail + 1;
+		}
+		else{
+			_Push_code_point(res, Escape_base + lead - 0x80);
+			++i;
+		}
+	}
+
+	return res;
+}
+
+static auto _Wcs_to_Utf8(wstring const &wcs)->std::string{
+	std::string res;
+	res.reserve(wcs.size());
+
+	for(size_t i = 0; i < wcs.size(); ++i){
+		auto cp = static_cast<char32_t>(wcs[i]);
+
+		auto const  
+			is_pair_f
+			= [&wcs, i, cp]()->bool{
+				return
+					sizeof(wchar_t) == 2 && cp >= 0xD800 && cp <= 0xDBFF && i + 1 < wcs.size()
+					&& wcs[i + 1] >= 0xDC00 && wcs[i + 1] <= 0xDFFF
+				;
+			}
+		;
+
+		if(cp >= Escape_base && cp <= Escape_base + 0x7F){
+			res.push_back( static_cast<char>(cp - Escape_base + 0x80) );
+
+			continue;
+		}
+		else if(is_pair_f()){
+			cp = 0x10000 + ( (cp - 0xD800) << 10 ) + ( static_cast<char32_t>(wcs[++i]) - 0xDC00 );
+		}
+		else if( _is_surrogate(cp) || cp > 0x10FFFF ){
+			cp = 0xFFFD;
+		}
+
+		_Push_utf8(res, cp);
+	}
+
+	return res;
+}
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
+
 struct h2u::_MD_Stream::_Contents{ std::queue<wstring> q = {}; };
 
 h2u::_MD_Stream::_MD_Stream()
@@ -127,8 +243,8 @@ auto h2u::_MD_Stream::md_materials_dir() const->dir_t const &{ return _md_materi
 void h2u::_MD_Stream::print_and_close(){
 	if(!is_open()){ return; }
 
-	for(  std::wofstream ofs( _Wcs_to_Mbs(_md_filepath).c_str() ); !_pcnts->q.empty();  ){
-		ofs << _pcnts->q.front();
+	for(  std::ofstream ofs( _Wcs_to_Mbs(_md_filepath).c_str() ); !_pcnts->q.empty();  ){
+		ofs << _Wcs_to_Utf8(_pcnts->q.front());
 		_pcnts->q.pop();
 	}
 
@@ -339,46 +455,18 @@ auto h2u::Title(wstring const &title, unsigned const level)->wstring{
 }
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
-static auto Getline(std::wifstream &wis, std::wstring &wbuf)->std::wifstream &{
-	static size_t constexpr String_buffer_size = 0x1'000;
+static auto Getline(std::ifstream &is, wstring &wbuf)->std::ifstream &{
+	std::string buf;
 
-	wbuf.reserve(String_buffer_size);
-	wbuf.clear();
-
-	std::wistream::sentry wse(wis, true);
-	std::wstreambuf &wsbuf = *wis.rdbuf();
-
-	auto constexpr  
-		cr = static_cast<wchar_t>(L'\r'),
-		Lf = static_cast<wchar_t>(L'\n'),
-		eof = static_cast<wchar_t>(std::wstreambuf::traits_type::eof())
-	;
-
-	while(true){
-		auto const c = static_cast<wchar_t>(wsbuf.sbumpc());
-
-		switch(c){
-		case Lf:
-			return wis;
-
-		case cr:
-			if( static_cast<wchar_t>(wsbuf.sgetc()) == Lf ){
-				wsbuf.sbumpc();
-			}
-
-			return wis;
-
-		case eof:
-			if(wbuf.empty()){
-				wis.setstate(std::ios::eofbit);
-			}
-
-			return wis;
-
-		default:
-			wbuf += c;
+	if( std::getline(is, buf) ){
+		if(!buf.empty() && buf.back() == '\r'){
+			buf.pop_back();
 		}
+
+		wbuf = _Utf8_to_Wcs(buf);
 	}
+
+	return is;
 }
 
 auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)->wstring{
@@ -386,7 +474,7 @@ auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)->wstring
 		throw std::runtime_error("the file to be loaded doesn't exist.");
 	}
 
-	std::wifstream file( _Wcs_to_Mbs(mdo->working_filepath()).c_str() );
+	std::ifstream file( _Wcs_to_Mbs(mdo->working_filepath()).c_str() );
 
 	wstring const  
 		cb_begin = wstring(L"BEGIN_CODE_BLOCK(") + code_block_tag + L")",
@@ -434,15 +522,19 @@ auto h2u::Load_code_block(wstring const code_block_tag) noexcept(false)->wstring
 
 	for( wstring buf; ::Getline(file, buf); ){
 		if(  are_same_str_f( trimmed_str_f(buf), cb_begin, cb_begin.size() )  ){
-			::Getline(file, buf);
+			while(true){
+				if( !::Getline(file, buf) ){
+					throw std::runtime_error("END_CODE_BLOCK is missing.");
+				}
+				else if(
+					are_same_str_f( trimmed_str_f(buf), cb_end, cb_end.size() )
+					|| are_same_str_f( trimmed_str_f(buf), cb_end2, cb_end2.size() )
+				){
+					break;
+				}
 
-			while(
-				!are_same_str_f( trimmed_str_f(buf), cb_end, cb_end.size() )
-				&& !are_same_str_f( trimmed_str_f(buf), cb_end2, cb_end2.size() )
-			){
 				qs.push(buf + L"\n");
 				nof_char += buf.size() + 1;
-				::Getline(file, buf);
 			}
 		}
 	}
@@ -467,7 +559,7 @@ auto h2u::Load_description_file(wstring const &filename) noexcept(false)->wstrin
 
 	std::queue<wstring> qs;
 	size_t nof_char = 0;
-	std::wifstream file( _Wcs_to_Mbs(filepath).c_str() );
+	std::ifstream file( _Wcs_to_Mbs(filepath).c_str() );
 
 	for( wstring buf; ::Getline(file, buf); nof_char += buf.size() + 4 ){
 		qs.push(buf + L"  \n");
@@ -535,10 +627,11 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 		qs.pop();
 	}
 
+	wstring const header = wstring(L"```") + lang + L"\n";
 	wstring res;
-	res.reserve(8 + lang.size() + total_str_len + 2 * qs.size());
 
-	res.append( wstring(L"```") + lang + L"\n" );
+	res.reserve(8 + lang.size() + total_str_len + 2 * qs.size());
+	res.append(header);
 
 	while(!qs.empty()){
 		auto const &s = qs.front();
@@ -554,10 +647,12 @@ auto h2u::_Code_writing(wstring const &str, wstring const &lang)->wstring{
 		qs.pop();
 	}
 
-	do{
-		res.pop_back();
+	if(res.size() > header.size()){
+		do{
+			res.pop_back();
+		}
+		while(res.back() != L'\n');
 	}
-	while(res.back() != L'\n');
 
 	res.append(L"```\n");
 
