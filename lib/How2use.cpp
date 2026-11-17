@@ -4,6 +4,7 @@
 //========//========//========//========//=======#//========//========//========//========//=======#
 
 #include "How2use.hpp"
+#include <cassert>
 #include <cwchar>
 #include <fstream>
 #include <queue>
@@ -67,7 +68,33 @@ static char32_t constexpr Escape_base = 0xDC80;
 
 static auto _is_surrogate(char32_t const cp)->bool{ return cp >= 0xD800 && cp <= 0xDFFF; }
 
+static auto _is_escape(char32_t const cp)->bool{
+	return cp >= Escape_base && cp <= Escape_base + 0x7F;
+}
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
+
+namespace{
+	namespace inner{
+		template<class CON>
+		class No_Reallocation;
+	}
+}
+
+template<class CON>
+class inner::No_Reallocation{
+public:
+	No_Reallocation(CON const &con) noexcept : _con(con), _capa(con.capacity()){}
+	~No_Reallocation(){ assert(_con.capacity() == _capa); }
+
+private:
+	CON const &_con;
+	std::size_t _capa;
+};
+//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
+
 static void _Push_code_point(wstring &wcs, char32_t const cp){
+	inner::No_Reallocation<wstring> const nr(wcs);
+	
 	if( sizeof(wchar_t) == 2 && cp > 0xFFFF ){
 		wcs.push_back(   static_cast<wchar_t>(  0xD800 + ( (cp - 0x10000) >> 10 )  )   );
 		wcs.push_back(   static_cast<wchar_t>(  0xDC00 + ( (cp - 0x10000) & 0x3FF )  )   );
@@ -78,9 +105,13 @@ static void _Push_code_point(wstring &wcs, char32_t const cp){
 }
 
 static void _Push_utf8(std::string &bytes, char32_t const cp){
+	inner::No_Reallocation<std::string> const nr(bytes);
 	auto const byte_f = [](char32_t const c)->char{ return static_cast<char>(c); };
 
-	if(cp < 0x80){
+	if( _is_escape(cp) ){
+		bytes.push_back( byte_f(cp - Escape_base + 0x80) );
+	}
+	else if(cp < 0x80){
 		bytes.push_back( byte_f(cp) );
 	}
 	else if(cp < 0x800){
@@ -97,6 +128,51 @@ static void _Push_utf8(std::string &bytes, char32_t const cp){
 		bytes.push_back(   byte_f(  0x80 | ( (cp >> 12) & 0x3F )  )   );
 		bytes.push_back(   byte_f(  0x80 | ( (cp >> 6) & 0x3F )  )   );
 		bytes.push_back(  byte_f( 0x80 | (cp & 0x3F) )  );
+	}
+}
+
+static auto _Utf8_length(char32_t const cp)->size_t{
+	if( _is_escape(cp) || cp < 0x80 ){
+		return 1;
+	}
+	else if(cp < 0x800){
+		return 2;
+	}
+	else if(cp < 0x10000){
+		return 3;
+	}
+	else{
+		return 4;
+	}
+}
+
+struct _Code_unit{
+	char32_t code_point;
+	size_t width;
+};
+
+static auto _Code_unit_at(wstring const &wcs, size_t const i)->_Code_unit{
+	auto const cp = static_cast<char32_t>(wcs[i]);
+
+	bool const  
+		is_pair
+		= sizeof(wchar_t) == 2 && cp >= 0xD800 && cp <= 0xDBFF && i + 1 < wcs.size()
+		&& wcs[i + 1] >= 0xDC00 && wcs[i + 1] <= 0xDFFF
+	;
+
+	if( _is_escape(cp) ){
+		return{ cp, 1 };
+	}
+	else if(is_pair){
+		auto const low = static_cast<char32_t>(wcs[i + 1]);
+
+		return{ 0x10000 + ( (cp - 0xD800) << 10 ) + (low - 0xDC00), 2 };
+	}
+	else if( _is_surrogate(cp) || cp > 0x10FFFF ){
+		return{ 0xFFFD, 1 };
+	}
+	else{
+		return{ cp, 1 };
 	}
 }
 
@@ -144,35 +220,30 @@ static auto _Utf8_to_Wcs(std::string const &bytes)->wstring{
 }
 
 static auto _Wcs_to_Utf8(wstring const &wcs)->std::string{
-	std::string res;
-	res.reserve(wcs.size());
+	size_t const  
+		nof_byte
+		= [&wcs]()->size_t{
+			size_t res = 0;
 
-	for(size_t i = 0; i < wcs.size(); ++i){
-		auto cp = static_cast<char32_t>(wcs[i]);
+			for(size_t i = 0; i < wcs.size();){
+				auto const unit = _Code_unit_at(wcs, i);
 
-		auto const  
-			is_pair_f
-			= [&wcs, i, cp]()->bool{
-				return
-					sizeof(wchar_t) == 2 && cp >= 0xD800 && cp <= 0xDBFF && i + 1 < wcs.size()
-					&& wcs[i + 1] >= 0xDC00 && wcs[i + 1] <= 0xDFFF
-				;
+				res += _Utf8_length(unit.code_point);
+				i += unit.width;
 			}
-		;
 
-		if(cp >= Escape_base && cp <= Escape_base + 0x7F){
-			res.push_back( static_cast<char>(cp - Escape_base + 0x80) );
+			return res;
+		}()
+	;
 
-			continue;
-		}
-		else if(is_pair_f()){
-			cp = 0x10000 + ( (cp - 0xD800) << 10 ) + ( static_cast<char32_t>(wcs[++i]) - 0xDC00 );
-		}
-		else if( _is_surrogate(cp) || cp > 0x10FFFF ){
-			cp = 0xFFFD;
-		}
+	std::string res;
+	res.reserve(nof_byte);
 
-		_Push_utf8(res, cp);
+	for(size_t i = 0; i < wcs.size();){
+		auto const unit = _Code_unit_at(wcs, i);
+
+		_Push_utf8(res, unit.code_point);
+		i += unit.width;
 	}
 
 	return res;
