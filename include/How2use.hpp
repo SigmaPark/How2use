@@ -477,7 +477,7 @@ private:
 		static std::initializer_list<void(*)()> test_list;   \
 	};  \
 	\
-	void PREFIX##TITLE##SUFFIX::test(){ \
+	auto PREFIX##TITLE##SUFFIX::test()->bool{ \
 		h2u::_MD_Stream_Guard guard( _H2U_DOUBLE_UNDERBAR_MACRO_HELPER(FILE) );  \
 		\
 		guard.is_successful = true;    \
@@ -502,6 +502,8 @@ private:
 		} \
 		\
 		std::wcout << L"//--------//--------//--------//--------//--------\n"; \
+		\
+		return guard.is_successful; \
 	} \
 	\
 	std::initializer_list<void(*)()> __##TITLE##_Helper::test_list =
@@ -511,7 +513,7 @@ private:
 	struct PREFIX##TITLE##SUFFIX{ \
 		PREFIX##TITLE##SUFFIX() = delete;   \
 		\
-		static void test(); \
+		static auto test()->bool; \
 	}
 //--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$//--//--//--//--//-$
 
